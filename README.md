@@ -1,8 +1,8 @@
-# bartender
+# Bartender
 
 Flutter application for browsing drinks & cocktails.
 
-## Flutter
+## Flutter learning resources
 
 https://flutter.dev/docs/cookbook
 
