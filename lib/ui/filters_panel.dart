@@ -1,15 +1,24 @@
+import 'package:bartender/blocs/drinks_list_cubit.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:meta/meta.dart';
+import 'package:flutter_cubit/flutter_cubit.dart';
 
 const _padding = EdgeInsets.all(16.0);
 
 class FiltersPanel extends StatefulWidget {
   final List<Ingredient> ingredients;
   final List<Category> categories;
+  final String ingredient;
+  final String category;
 
-  const FiltersPanel({@required this.ingredients, @required this.categories});
+  const FiltersPanel(
+      {@required this.ingredients,
+      @required this.categories,
+      @required this.ingredient,
+      @required this.category});
 
   @override
   _FiltersPanelState createState() => _FiltersPanelState();
@@ -29,15 +38,6 @@ class _FiltersPanelState extends State<FiltersPanel> {
 
   void _createDropdownMenuItems() {
     var newItems = <DropdownMenuItem<String>>[];
-    newItems.add(DropdownMenuItem<String>(
-      value: 'Any',
-      child: Container(
-        child: Text(
-          'Any',
-          softWrap: true,
-        ),
-      ),
-    ));
     for (var ingredient in widget.ingredients) {
       newItems.add(DropdownMenuItem<String>(
         value: ingredient.name,
@@ -53,15 +53,6 @@ class _FiltersPanelState extends State<FiltersPanel> {
       _ingredientMenuItems = newItems;
     });
     newItems = <DropdownMenuItem<String>>[];
-    newItems.add(DropdownMenuItem<String>(
-      value: 'Any',
-      child: Container(
-        child: Text(
-          'Any',
-          softWrap: true,
-        ),
-      ),
-    ));
     for (var category in widget.categories) {
       newItems.add(DropdownMenuItem<String>(
         value: category.name,
@@ -82,8 +73,11 @@ class _FiltersPanelState extends State<FiltersPanel> {
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
-      _ingredientFilter = widget.ingredients[0].name;
-      _categoryFilter = widget.categories[0].name;
+      _ingredientFilter = widget.ingredient == null
+          ? widget.ingredients[0].name
+          : widget.ingredient;
+      _categoryFilter =
+          widget.category == null ? widget.categories[0].name : widget.category;
     });
   }
 
@@ -179,24 +173,43 @@ class _FiltersPanelState extends State<FiltersPanel> {
               ),
               _createDropdown(_ingredientFilter, _updateIngredientFilter,
                   _ingredientMenuItems),
+              Padding(
+                padding: EdgeInsets.only(top: 12, bottom: 12),
+                child: PlatformButton(
+                  onPressed: () => {_onIngredientSelected()},
+                  color: Colors.blueGrey,
+                  child: PlatformText(
+                    'Show results',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
             ],
           ),
         ));
-    final categoryInput = Padding(
-      padding: EdgeInsets.all(4.0),
-      child: IntrinsicWidth(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Category',
-              textWidthBasis: TextWidthBasis.parent,
-              style: Theme.of(context).textTheme.headline6,
+    final categoryInput = IntrinsicWidth(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Category',
+            textWidthBasis: TextWidthBasis.parent,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          _createDropdown(
+              _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
+          Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: PlatformButton(
+              onPressed: () => {_onCategorySelected()},
+              color: Colors.blueGrey,
+              child: PlatformText(
+                'Show results',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            _createDropdown(
-                _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
-          ],
-        ),
+          )
+        ],
       ),
     );
 
@@ -233,5 +246,15 @@ class _FiltersPanelState extends State<FiltersPanel> {
         },
       ),
     );
+  }
+
+  void _onIngredientSelected() {
+    final drinksCubit = context.cubit<DrinksListCubit>();
+    drinksCubit.getFilteredData(ingredient: _ingredientFilter);
+  }
+
+  void _onCategorySelected() {
+    final drinksCubit = context.cubit<DrinksListCubit>();
+    drinksCubit.getFilteredData(category: _categoryFilter);
   }
 }

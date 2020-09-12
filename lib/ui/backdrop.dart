@@ -102,7 +102,6 @@ class _BackdropTitle extends AnimatedWidget {
 }
 
 /// Builds a Backdrop.
-///
 /// A Backdrop widget has two panels, front and back. The front panel is shown
 /// by default, and slides down to show the back panel, from which a user
 /// can make a selection. The user can also configure the titles for when the
@@ -153,6 +152,8 @@ class _BackdropState extends State<Backdrop>
       value: 1.0,
       vsync: this,
     );
+    //  FocusScope.of(context).requestFocus(FocusNode());
+    _controller.fling(velocity: -_kFlingVelocity);
   }
 
   @override

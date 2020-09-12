@@ -1,4 +1,3 @@
-import 'package:bartender/data/models/alcohol_option.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
@@ -16,20 +15,29 @@ class DrinksListLoading extends DrinksListState {
   List<Object> get props => [];
 }
 
-class DrinksListSuccess extends DrinksListState {
-  final List<AlcoholOption> alcoholOptions;
+class DrinksInitialListSuccess extends DrinksListState {
   final List<Drink> drinks;
   final List<Ingredient> ingredients;
   final List<Category> categories;
 
   @override
-  List<Object> get props => [alcoholOptions, drinks, ingredients, categories];
+  List<Object> get props => [drinks, ingredients, categories];
 
-  DrinksListSuccess(
-      this.alcoholOptions, this.drinks, this.ingredients, this.categories);
+  DrinksInitialListSuccess(this.drinks, this.ingredients, this.categories);
 }
 
 class DrinksListError extends DrinksListState {
   @override
   List<Object> get props => [];
+}
+
+class DrinksFilteredListSuccess extends DrinksListState {
+  final List<Drink> drinks;
+  final String ingredient;
+  final String category;
+
+  @override
+  List<Object> get props => [drinks, ingredient, category];
+
+  DrinksFilteredListSuccess(this.drinks, this.ingredient, this.category);
 }

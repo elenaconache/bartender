@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import 'api/api_client.dart';
-import 'models/alcohol_option.dart';
 import 'models/category.dart';
 import 'models/drink.dart';
 import 'models/ingredient.dart';
@@ -13,14 +12,10 @@ class BartenderRepository {
 
   BartenderRepository({@required this.apiClient}) : assert(apiClient != null);
 
-  Future<List<Drink>> getFilteredDrinks(String alcoholOption,
+  Future<List<Drink>> getFilteredDrinks(
       {String ingredient, String category}) async {
-    return apiClient.getFilteredDrinks(alcoholOption,
+    return apiClient.getFilteredDrinks(
         ingredient: ingredient, category: category);
-  }
-
-  Future<List<AlcoholOption>> getAlcoholOptions() async {
-    return apiClient.getAlcoholOptions();
   }
 
   Future<List<Ingredient>> getIngredients() async {

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert' show json, utf8;
 import 'dart:io';
 
-import 'package:bartender/data/models/alcohol_option.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
@@ -15,14 +14,12 @@ class ApiClient {
 
   final String _baseURL = 'www.thecocktaildb.com';
 
-  Future<List<Drink>> getFilteredDrinks(String alcoholOption,
+  Future<List<Drink>> getFilteredDrinks(
       {String ingredient, String category}) async {
     final Map<String, String> queryParams = Map();
-    queryParams['a'] = alcoholOption;
     if (ingredient != null) {
       queryParams['i'] = ingredient;
-    }
-    if (category != null) {
+    } else if (category != null) {
       queryParams['c'] = category;
     }
     final uri = Uri.https(_baseURL, '/api/json/v1/1/filter.php', queryParams);
@@ -36,20 +33,6 @@ class ApiClient {
       drinks.add(Drink.fromJson(d));
     }
     return drinks;
-  }
-
-  Future<List<AlcoholOption>> getAlcoholOptions() async {
-    final uri = Uri.https(_baseURL, '/api/json/v1/1/list.php', {'a': 'list'});
-    final jsonResponse = await _getJson(uri);
-    if (jsonResponse == null || jsonResponse['drinks'] == null) {
-      print('Error retrieving alcohol options.');
-      return null;
-    }
-    final alcoholOptions = <AlcoholOption>[];
-    for (var opt in jsonResponse['drinks']) {
-      alcoholOptions.add(AlcoholOption.fromJson(opt));
-    }
-    return alcoholOptions;
   }
 
   Future<List<Ingredient>> getIngredients() async {
@@ -81,7 +64,6 @@ class ApiClient {
   }
 
   /// Fetches and decodes a JSON object represented as a Dart [Map].
-  ///
   /// Returns null if the API server is down, or the response is not JSON.
   Future<Map<String, dynamic>> _getJson(Uri uri) async {
     final httpRequest = await _httpClient.getUrl(uri);

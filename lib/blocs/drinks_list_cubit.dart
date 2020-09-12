@@ -16,11 +16,29 @@ class DrinksListCubit extends CubitStream<DrinksListState> {
   void _getInitialData() async {
     try {
       emit(DrinksListLoading());
-      final alcoholOptions = await repository.getAlcoholOptions();
-      final drinks = await repository.getFilteredDrinks(alcoholOptions[0].name);
       final ingredients = await repository.getIngredients();
+      final drinks =
+          await repository.getFilteredDrinks(ingredient: ingredients[0].name);
       final categories = await repository.getCategories();
-      emit(DrinksListSuccess(alcoholOptions, drinks, ingredients, categories));
+      emit(DrinksInitialListSuccess(drinks, ingredients, categories));
+    } catch (e) {
+      emit(DrinksListError());
+    }
+  }
+
+  void getFilteredData({ingredient, category}) async {
+    try {
+      emit(DrinksListLoading());
+      if (ingredient != null) {
+        final drinks =
+            await repository.getFilteredDrinks(ingredient: ingredient);
+        emit(DrinksFilteredListSuccess(drinks, ingredient, category));
+      } else if (category != null) {
+        final drinks = await repository.getFilteredDrinks(category: category);
+        emit(DrinksFilteredListSuccess(drinks, ingredient, category));
+      } else {
+        emit(DrinksListError());
+      }
     } catch (e) {
       emit(DrinksListError());
     }
