@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 const double _kFlingVelocity = 2.0;
 
 class _BackdropPanel extends StatelessWidget {
-  const _BackdropPanel({
+  _BackdropPanel({
     Key key,
     this.onTap,
     this.onVerticalDragUpdate,
@@ -63,7 +63,7 @@ class _BackdropTitle extends AnimatedWidget {
   final Widget frontTitle;
   final Widget backTitle;
 
-  const _BackdropTitle({
+  _BackdropTitle({
     Key key,
     Listenable listenable,
     this.frontTitle,
@@ -112,7 +112,7 @@ class Backdrop extends StatefulWidget {
   final Widget frontTitle;
   final Widget backTitle;
 
-  const Backdrop({
+  Backdrop({
     @required this.frontPanel,
     @required this.backPanel,
     @required this.frontTitle,
@@ -132,16 +132,6 @@ class _BackdropState extends State<Backdrop>
   AnimationController _controller;
 
   @override
-  void didUpdateWidget(Backdrop old) {
-    super.didUpdateWidget(old);
-    if (!_backdropPanelVisible) {
-      setState(() {
-        _controller.fling(velocity: _kFlingVelocity);
-      });
-    }
-  }
-
-  @override
   void initState() {
     super.initState();
     // This creates an [AnimationController] that can allows for animation for
@@ -152,7 +142,6 @@ class _BackdropState extends State<Backdrop>
       value: 1.0,
       vsync: this,
     );
-    //  FocusScope.of(context).requestFocus(FocusNode());
     _controller.fling(velocity: -_kFlingVelocity);
   }
 
@@ -216,9 +205,10 @@ class _BackdropState extends State<Backdrop>
       end: RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0),
     ).animate(_controller.view);
 
-    return Container(
+    return SafeArea(
+        child: Container(
       key: _backdropKey,
-      color: Colors.deepOrange, //widget.currentCategory.color,
+      color: Color(0xff264653), //widget.currentCategory.color,
       child: Stack(
         children: <Widget>[
           widget.backPanel,
@@ -234,18 +224,19 @@ class _BackdropState extends State<Backdrop>
           ),
         ],
       ),
-    );
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Color(0xff264653),
         elevation: 0.0,
         leading: IconButton(
           onPressed: _toggleBackdropPanelVisibility,
           icon: AnimatedIcon(
+            color: Colors.white,
             icon: AnimatedIcons.menu_arrow,
             progress: _controller.view,
           ),

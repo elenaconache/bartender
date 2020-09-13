@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 class Ingredient {
   final String name;
 
-  const Ingredient({
+  Ingredient({
     @required this.name,
   }) : assert(name != null);
 

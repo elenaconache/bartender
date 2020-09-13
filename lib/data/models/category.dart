@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 class Category {
   final String name;
 
-  const Category({
+  Category({
     @required this.name,
   }) : assert(name != null);
 

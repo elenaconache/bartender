@@ -6,7 +6,7 @@ class Drink {
   final String imageURL;
   final String instructions;
 
-  const Drink(
+  Drink(
       {@required this.name,
       @required this.id,
       this.imageURL,

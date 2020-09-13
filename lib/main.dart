@@ -15,6 +15,7 @@ class BartenderApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Bartender',
         theme: ThemeData(
           // This is the theme of your application.

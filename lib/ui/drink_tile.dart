@@ -9,7 +9,7 @@ class DrinkTile extends StatelessWidget {
   final Drink drink;
   final ValueChanged<Drink> onTap;
 
-  const DrinkTile({
+  DrinkTile({
     Key key,
     @required this.drink,
     this.onTap,
@@ -38,8 +38,10 @@ class DrinkTile extends StatelessWidget {
             height: 120,
             fit: BoxFit.contain,
             imageUrl: drink.imageURL + "/preview",
-            placeholder: (context, url) =>
-                Center(child: CircularProgressIndicator()),
+            placeholder: (context, url) => Center(
+                child: CircularProgressIndicator(
+              backgroundColor: Color(0xffe76f51),
+            )),
           ),
         ),
       ),

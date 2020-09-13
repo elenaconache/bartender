@@ -11,7 +11,7 @@ import 'package:flutter_cubit/flutter_cubit.dart';
 import 'backdrop.dart';
 
 class DrinksListScreen extends StatefulWidget {
-  const DrinksListScreen();
+  DrinksListScreen();
 
   @override
   _DrinksListScreenState createState() => _DrinksListScreenState();
@@ -100,7 +100,10 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
             ingredient: null),
         backPanel: listView,
         frontTitle: Text(''),
-        backTitle: Text('Drinks'),
+        backTitle: Text(
+          'Drinks',
+          style: TextStyle(color: Colors.white),
+        ),
       );
       return _backdrop;
     } else if (state is DrinksFilteredListSuccess) {
@@ -125,7 +128,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
         ),
         backPanel: listView,
         frontTitle: Text(''),
-        backTitle: Text('Drinks'),
+        backTitle: Text('Drinks', style: TextStyle(color: Colors.white)),
       );
       return _backdrop;
     } else {
