@@ -59,48 +59,6 @@ class _BackdropPanel extends StatelessWidget {
   }
 }
 
-class _BackdropTitle extends AnimatedWidget {
-  final Widget frontTitle;
-  final Widget backTitle;
-
-  _BackdropTitle({
-    Key key,
-    Listenable listenable,
-    this.frontTitle,
-    this.backTitle,
-  }) : super(key: key, listenable: listenable);
-
-  @override
-  Widget build(BuildContext context) {
-    final Animation<double> animation = this.listenable;
-    return DefaultTextStyle(
-      style: Theme.of(context).primaryTextTheme.headline6,
-      softWrap: false,
-      overflow: TextOverflow.ellipsis,
-      // Here, we do a custom cross fade between backTitle and frontTitle.
-      // This makes a smooth animation between the two texts.
-      child: Stack(
-        children: <Widget>[
-          Opacity(
-            opacity: CurvedAnimation(
-              parent: ReverseAnimation(animation),
-              curve: Interval(0.5, 1.0),
-            ).value,
-            child: backTitle,
-          ),
-          Opacity(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Interval(0.5, 1.0),
-            ).value,
-            child: frontTitle,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// Builds a Backdrop.
 /// A Backdrop widget has two panels, front and back. The front panel is shown
 /// by default, and slides down to show the back panel, from which a user
@@ -208,7 +166,7 @@ class _BackdropState extends State<Backdrop>
     return SafeArea(
         child: Container(
       key: _backdropKey,
-      color: Color(0xff264653), //widget.currentCategory.color,
+      color: Color(0xff264653),
       child: Stack(
         children: <Widget>[
           widget.backPanel,
@@ -234,18 +192,15 @@ class _BackdropState extends State<Backdrop>
         backgroundColor: Color(0xff264653),
         elevation: 0.0,
         leading: IconButton(
+          iconSize: 30,
           onPressed: _toggleBackdropPanelVisibility,
-          icon: AnimatedIcon(
+          icon: Icon(
+            Icons.menu,
             color: Colors.white,
-            icon: AnimatedIcons.menu_arrow,
-            progress: _controller.view,
           ),
         ),
-        title: _BackdropTitle(
-          listenable: _controller.view,
-          frontTitle: widget.frontTitle,
-          backTitle: widget.backTitle,
-        ),
+        title: widget.backTitle,
+        // ),
       ),
       body: LayoutBuilder(
         builder: _buildStack,

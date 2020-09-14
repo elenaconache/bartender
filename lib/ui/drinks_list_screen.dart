@@ -100,10 +100,16 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
             ingredient: null),
         backPanel: listView,
         frontTitle: Text(''),
-        backTitle: Text(
-          'Drinks',
-          style: TextStyle(color: Colors.white),
-        ),
+        backTitle: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'Drinks',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Poppins',
+                  fontStyle: FontStyle.normal,
+                  fontSize: 20),
+            )),
       );
       return _backdrop;
     } else if (state is DrinksFilteredListSuccess) {
@@ -120,16 +126,24 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
       );
 
       _backdrop = Backdrop(
-        frontPanel: FiltersPanel(
-          ingredients: ingredients,
-          categories: categories,
-          ingredient: state.ingredient,
-          category: state.category,
-        ),
-        backPanel: listView,
-        frontTitle: Text(''),
-        backTitle: Text('Drinks', style: TextStyle(color: Colors.white)),
-      );
+          frontPanel: FiltersPanel(
+            ingredients: ingredients,
+            categories: categories,
+            ingredient: state.ingredient,
+            category: state.category,
+          ),
+          backPanel: listView,
+          frontTitle: Text(''),
+          backTitle: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                'Drinks',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Poppins',
+                    fontStyle: FontStyle.normal,
+                    fontSize: 30),
+              )));
       return _backdrop;
     } else {
       return Container();
