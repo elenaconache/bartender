@@ -7,6 +7,18 @@ import 'package:meta/meta.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 
 const _padding = EdgeInsets.all(16.0);
+const _labelColor = Color(0xff3333333);
+const _borderColor = Color(0x1500001F);
+const _hintColor = Color(0xff000000);
+const _iconColor = Color(0xff004861);
+const _dropdownArrowColor = Color(0xff606262);
+const _filterLabelTextStyle = TextStyle(
+    color: _labelColor,
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w600,
+    fontSize: 16);
+const _dropdownOptionTextStyle =
+    TextStyle(color: _hintColor, fontSize: 16, fontStyle: FontStyle.normal);
 
 class FiltersPanel extends StatefulWidget {
   final List<Ingredient> ingredients;
@@ -44,7 +56,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
         child: Container(
           child: Text(
             ingredient.name,
-            softWrap: true,
+            style: _dropdownOptionTextStyle,
           ),
         ),
       ));
@@ -60,6 +72,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
           child: Text(
             category.name,
             softWrap: true,
+            style: _dropdownOptionTextStyle,
           ),
         ),
       ));
@@ -73,37 +86,43 @@ class _FiltersPanelState extends State<FiltersPanel> {
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
-      _ingredientFilter = widget.ingredient == null
-          ? widget.ingredients[0].name
-          : widget.ingredient;
-      _categoryFilter =
-          widget.category == null ? widget.categories[0].name : widget.category;
+      if (widget.ingredient == null && widget.category == null) {
+        _ingredientFilter = widget.ingredients[0].name;
+        _categoryFilter = null;
+      } else {
+        _ingredientFilter = widget.ingredient;
+        _categoryFilter = widget.category;
+      }
     });
   }
 
   void _updateIngredientFilter(dynamic ingredient) {
     setState(() {
       _ingredientFilter = ingredient;
+      _categoryFilter = null;
     });
   }
 
   void _updateCategoryFilter(dynamic category) {
     setState(() {
       _categoryFilter = category;
+      _ingredientFilter = null;
     });
   }
 
   Widget _createDropdown(String currentValue, ValueChanged<dynamic> onChanged,
       List<DropdownMenuItem<String>> values) {
     return Container(
-      margin: EdgeInsets.only(top: 16.0),
+      height: 56,
+      margin: EdgeInsets.only(top: 12.0),
       decoration: BoxDecoration(
         // This sets the color of the [DropdownButton] itself
-        color: Colors.grey[50],
+        color: Colors.transparent,
         border: Border.all(
-          color: Colors.grey[400],
+          color: _borderColor,
           width: 1.0,
         ),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Theme(
@@ -114,12 +133,23 @@ class _FiltersPanelState extends State<FiltersPanel> {
         child: DropdownButtonHideUnderline(
           child: ButtonTheme(
             alignedDropdown: true,
-            child: DropdownButton(
+            child: DropdownButton<String>(
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 18,
+                color: _dropdownArrowColor,
+              ),
+              hint: Text('Select an option',
+                  style: TextStyle(
+                    color: _hintColor,
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                  )),
               isExpanded: true,
               value: currentValue,
               items: values,
               onChanged: onChanged,
-              style: Theme.of(context).textTheme.headline6,
+              style: _dropdownOptionTextStyle,
             ),
           ),
         ),
@@ -149,6 +179,14 @@ class _FiltersPanelState extends State<FiltersPanel> {
     drinksCubit.getFilteredData(category: _categoryFilter);
   }
 
+  void _filter() {
+    if (_ingredientFilter == null) {
+      _onCategorySelected();
+    } else {
+      _onIngredientSelected();
+    }
+  }
+
   Widget _buildErrorWidget() {
     return SingleChildScrollView(
       child: Container(
@@ -156,7 +194,6 @@ class _FiltersPanelState extends State<FiltersPanel> {
         padding: _padding,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          //   color: Colors.red,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -181,101 +218,172 @@ class _FiltersPanelState extends State<FiltersPanel> {
   }
 
   Widget _buildPortraitWidget() {
-    final converter = ListView(
-      children: [
-        Text(
-          'Ingredient',
-          style: Theme.of(context).textTheme.headline6,
+    final converter = Container(
+        margin: EdgeInsets.only(
+          top: 16,
         ),
-        _createDropdown(
-            _ingredientFilter, _updateIngredientFilter, _ingredientMenuItems),
-        Padding(
-          padding: EdgeInsets.only(top: 12, bottom: 12),
-          child: PlatformButton(
-            onPressed: () => {_onIngredientSelected()},
-            color: Color(0xffe76f51),
-            child: PlatformText(
-              'Show results',
-              style: TextStyle(color: Colors.white),
+        child: ListView(
+          children: [
+            Text('Ingredient', style: _filterLabelTextStyle),
+            _createDropdown(_ingredientFilter, _updateIngredientFilter,
+                _ingredientMenuItems),
+            Padding(
+              padding: EdgeInsets.only(top: 24),
+              child: Text(
+                'Category',
+                style: _filterLabelTextStyle,
+              ),
             ),
-          ),
-        ),
-        Text(
-          'Category',
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        _createDropdown(
-            _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
-        Padding(
-          padding: EdgeInsets.only(top: 12),
-          child: PlatformButton(
-            onPressed: () => {_onCategorySelected()},
-            color: Color(0xffe76f51),
-            child: PlatformText(
-              'Show results',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        )
-      ],
-    );
+            _createDropdown(
+                _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
+            Row(
+              children: [
+                Container(
+                  height: 48,
+                  margin: EdgeInsets.only(top: 32.0),
+                  decoration: BoxDecoration(
+                    // This sets the color of the [DropdownButton] itself
+                    color: Colors.transparent,
+                    border: Border.all(
+                      color: _iconColor,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.undo),
+                    iconSize: 24.0,
+                    color: _iconColor,
+                    onPressed: _setDefaults,
+                  ),
+                ),
+                Spacer(),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    height: 48,
+                    margin: EdgeInsets.only(top: 32),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(color: _iconColor)),
+                      padding: EdgeInsets.only(
+                          left: 56, right: 56, top: 16, bottom: 16),
+                      onPressed: () => {_filter()},
+                      color: _iconColor,
+                      child: PlatformText(
+                        'Show results',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontSize: 12),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        ));
     return converter;
   }
 
   Widget _buildLandscapeWidget() {
-    final ingredientInput = Padding(
-        padding: EdgeInsets.all(4.0),
-        child: IntrinsicWidth(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Ingredient',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              _createDropdown(_ingredientFilter, _updateIngredientFilter,
-                  _ingredientMenuItems),
-              Padding(
-                padding: EdgeInsets.only(top: 12, bottom: 12),
-                child: PlatformButton(
-                  onPressed: () => {_onIngredientSelected()},
-                  color: Color(0xffe76f51),
-                  child: PlatformText(
-                    'Show results',
-                    style: TextStyle(color: Colors.white),
+    final converter = Container(
+        margin: EdgeInsets.only(
+          top: 16,
+        ),
+        child: ListView(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text('Ingredient', style: _filterLabelTextStyle),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'Category',
+                    style: _filterLabelTextStyle,
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 4),
+                    child: _createDropdown(_ingredientFilter,
+                        _updateIngredientFilter, _ingredientMenuItems),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ));
-    final categoryInput = Padding(
-      padding: EdgeInsets.all(4.0),
-      child: IntrinsicWidth(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Category',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          _createDropdown(
-              _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
-          Padding(
-            padding: EdgeInsets.only(top: 12),
-            child: PlatformButton(
-              onPressed: () => {_onCategorySelected()},
-              color: Color(0xffe76f51),
-              child: PlatformText(
-                'Show results',
-                style: TextStyle(color: Colors.white),
-              ),
+                Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: _createDropdown(_categoryFilter,
+                          _updateCategoryFilter, _categoryMenuItems),
+                    ))
+              ],
             ),
-          )
-        ],
-      )),
-    );
-    return GridView.count(
-        crossAxisCount: 2, children: [ingredientInput, categoryInput]);
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        height: 48,
+                        margin: EdgeInsets.only(top: 32.0, right: 4),
+                        decoration: BoxDecoration(
+                          // This sets the color of the [DropdownButton] itself
+                          color: Colors.transparent,
+                          border: Border.all(
+                            color: _iconColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.undo),
+                          iconSize: 24.0,
+                          color: _iconColor,
+                          onPressed: _setDefaults,
+                        ),
+                      )),
+                ),
+                Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        height: 48,
+                        margin: EdgeInsets.only(top: 32, left: 4),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: BorderSide(color: _iconColor)),
+                          padding: EdgeInsets.only(
+                              left: 56, right: 56, top: 16, bottom: 16),
+                          onPressed: () => {_filter()},
+                          color: _iconColor,
+                          child: PlatformText(
+                            'Show results',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                                fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ))
+              ],
+            )
+          ],
+        ));
+    return converter;
   }
 }

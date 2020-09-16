@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 const double _kFlingVelocity = 2.0;
+const Color gradientStartColor = Color(0xff004861);
+const Color gradientEndColor = Color(0xff013E53);
+const _frontTitleBackground = Color(0xffEBEEF1);
 
 class _BackdropPanel extends StatelessWidget {
   _BackdropPanel({
@@ -25,9 +28,10 @@ class _BackdropPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 2.0,
+      color: _frontTitleBackground,
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(12.0),
-        topRight: Radius.circular(12.0),
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,8 +42,9 @@ class _BackdropPanel extends StatelessWidget {
             onVerticalDragEnd: onVerticalDragEnd,
             onTap: onTap,
             child: Container(
-              height: 48.0,
-              padding: EdgeInsetsDirectional.only(start: 16.0),
+              //  color:
+              height: 52.0,
+              //padding: EdgeInsetsDirectional.only(start: 16.0),
               alignment: AlignmentDirectional.center,
               child: DefaultTextStyle(
                 style: Theme.of(context).textTheme.headline6,
@@ -87,6 +92,7 @@ class Backdrop extends StatefulWidget {
 class _BackdropState extends State<Backdrop>
     with SingleTickerProviderStateMixin {
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
+  bool _shouldDisplayCloseButton = false;
   AnimationController _controller;
 
   @override
@@ -101,6 +107,9 @@ class _BackdropState extends State<Backdrop>
       vsync: this,
     );
     _controller.fling(velocity: -_kFlingVelocity);
+    // setState(() {
+    _shouldDisplayCloseButton = false;
+    // });
   }
 
   @override
@@ -119,15 +128,15 @@ class _BackdropState extends State<Backdrop>
     FocusScope.of(context).requestFocus(FocusNode());
     _controller.fling(
         velocity: _backdropPanelVisible ? -_kFlingVelocity : _kFlingVelocity);
+    setState(() {
+      _shouldDisplayCloseButton = _backdropPanelVisible;
+    });
   }
 
   double get _backdropHeight {
     final RenderBox renderBox = _backdropKey.currentContext.findRenderObject();
     return renderBox.size.height;
   }
-
-  // By design: the panel can only be opened with a swipe. To close the panel
-  // the user must either tap its heading or the backdrop's menu icon.
 
   void _handleDragUpdate(DragUpdateDetails details) {
     if (_controller.isAnimating ||
@@ -163,48 +172,74 @@ class _BackdropState extends State<Backdrop>
       end: RelativeRect.fromLTRB(0.0, 0.0, 0.0, 0.0),
     ).animate(_controller.view);
 
-    return SafeArea(
-        child: Container(
-      key: _backdropKey,
-      color: Color(0xff264653),
-      child: Stack(
-        children: <Widget>[
-          widget.backPanel,
-          PositionedTransition(
-            rect: panelAnimation,
-            child: _BackdropPanel(
-              onTap: _toggleBackdropPanelVisibility,
-              onVerticalDragUpdate: _handleDragUpdate,
-              onVerticalDragEnd: _handleDragEnd,
-              title: Text('Filters'),
-              child: widget.frontPanel,
-            ),
+    return Stack(
+      children: <Widget>[
+        widget.backPanel,
+        PositionedTransition(
+          rect: panelAnimation,
+          child: _BackdropPanel(
+            onTap: _toggleBackdropPanelVisibility,
+            onVerticalDragUpdate: _handleDragUpdate,
+            onVerticalDragEnd: _handleDragEnd,
+            title: widget.frontTitle,
+            child: widget.frontPanel,
           ),
-        ],
-      ),
-    ));
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff264653),
-        elevation: 0.0,
-        leading: IconButton(
-          iconSize: 30,
-          onPressed: _toggleBackdropPanelVisibility,
-          icon: Icon(
-            Icons.menu,
-            color: Colors.white,
+    return Container(
+        key: _backdropKey,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [gradientStartColor, gradientEndColor],
+        )),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
+              iconSize: 30,
+              onPressed: _toggleBackdropPanelVisibility,
+              icon: Icon(
+                Icons.menu,
+                color: Colors.white,
+              ),
+            ),
+            title: widget.backTitle,
+            actionsIconTheme: IconThemeData(
+              size: 30.0,
+              color: Colors.white,
+            ),
+            actions: _shouldDisplayCloseButton
+                ? <Widget>[
+                    Padding(
+                        padding: EdgeInsets.only(right: 20.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            _controller.fling(velocity: -_kFlingVelocity);
+                            setState(() {
+                              _shouldDisplayCloseButton = false;
+                            });
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: 26.0,
+                          ),
+                        )),
+                  ]
+                : [],
           ),
-        ),
-        title: widget.backTitle,
-        // ),
-      ),
-      body: LayoutBuilder(
-        builder: _buildStack,
-      ),
-    );
+          body: LayoutBuilder(
+            builder: _buildStack,
+          ),
+        ));
   }
 }

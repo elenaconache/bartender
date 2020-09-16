@@ -10,6 +10,8 @@ import 'package:flutter_cubit/flutter_cubit.dart';
 
 import 'backdrop.dart';
 
+const Color blueTextColor = Color(0xff004861);
+
 class DrinksListScreen extends StatefulWidget {
   DrinksListScreen();
 
@@ -93,24 +95,31 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
       categories = state.categories;
 
       _backdrop = Backdrop(
-        frontPanel: FiltersPanel(
-            ingredients: ingredients,
-            categories: categories,
-            category: null,
-            ingredient: null),
-        backPanel: listView,
-        frontTitle: Text(''),
-        backTitle: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              'Drinks',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Poppins',
-                  fontStyle: FontStyle.normal,
-                  fontSize: 20),
-            )),
-      );
+          frontPanel: FiltersPanel(
+              ingredients: ingredients,
+              categories: categories,
+              category: null,
+              ingredient: null),
+          backPanel: listView,
+          frontTitle: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Filters'.toUpperCase(),
+                style: TextStyle(
+                    color: blueTextColor,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20),
+              )),
+          backTitle: Text(
+            'Drinks',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontStyle: FontStyle.normal,
+                fontSize: 20),
+          ) //),
+          );
       return _backdrop;
     } else if (state is DrinksFilteredListSuccess) {
       List<Drink> drinks = state.drinks;
@@ -124,7 +133,6 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
         ),
         child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
       );
-
       _backdrop = Backdrop(
           frontPanel: FiltersPanel(
             ingredients: ingredients,
@@ -133,17 +141,24 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
             category: state.category,
           ),
           backPanel: listView,
-          frontTitle: Text(''),
-          backTitle: Align(
-              alignment: Alignment.centerRight,
+          frontTitle: Align(
+              alignment: Alignment.center,
               child: Text(
-                'Drinks',
+                'Filters'.toUpperCase(),
                 style: TextStyle(
-                    color: Colors.white,
+                    color: blueTextColor,
                     fontFamily: 'Poppins',
-                    fontStyle: FontStyle.normal,
-                    fontSize: 30),
-              )));
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20),
+              )),
+          backTitle: Text(
+            'Drinks',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontStyle: FontStyle.normal,
+                fontSize: 20),
+          ));
       return _backdrop;
     } else {
       return Container();

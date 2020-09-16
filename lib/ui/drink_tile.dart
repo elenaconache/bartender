@@ -26,13 +26,8 @@ class DrinkTile extends StatelessWidget {
       color: Colors.transparent,
       child: Container(
         margin: const EdgeInsets.all(4.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 1),
-          //color: Colors.amber,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(12.0),
           child: CachedNetworkImage(
             width: 120,
             height: 120,
