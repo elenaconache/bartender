@@ -27,8 +27,13 @@ class DrinksInitialListSuccess extends DrinksListState {
 }
 
 class DrinksListError extends DrinksListState {
+  final String ingredient;
+  final String category;
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [ingredient, category];
+
+  DrinksListError(this.ingredient, this.category);
 }
 
 class DrinksFilteredListSuccess extends DrinksListState {

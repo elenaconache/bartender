@@ -1,6 +1,9 @@
 import 'dart:math' as math;
 
+import 'package:bartender/blocs/drinks_list_cubit.dart';
+import 'package:bartender/blocs/drinks_list_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:meta/meta.dart';
 
 const double _kFlingVelocity = 2.0;
@@ -103,10 +106,10 @@ class _BackdropState extends State<Backdrop>
     // mode, while 1.0 means that the front panel is open.
     _controller = AnimationController(
       duration: Duration(milliseconds: 300),
-      value: 1.0,
+      value: 0,
       vsync: this,
     );
-    _controller.fling(velocity: -_kFlingVelocity);
+    //  _controller.fling(velocity: -_kFlingVelocity);
     // setState(() {
     _shouldDisplayCloseButton = false;
     // });
@@ -124,7 +127,7 @@ class _BackdropState extends State<Backdrop>
         status == AnimationStatus.forward;
   }
 
-  void _toggleBackdropPanelVisibility() {
+  void toggleBackdropPanelVisibility() {
     FocusScope.of(context).requestFocus(FocusNode());
     _controller.fling(
         velocity: _backdropPanelVisible ? -_kFlingVelocity : _kFlingVelocity);
@@ -140,8 +143,9 @@ class _BackdropState extends State<Backdrop>
 
   void _handleDragUpdate(DragUpdateDetails details) {
     if (_controller.isAnimating ||
-        _controller.status == AnimationStatus.completed) return;
-
+        _controller.status == AnimationStatus.completed) {
+      return;
+    }
     _controller.value -= details.primaryDelta / _backdropHeight;
   }
 
@@ -151,14 +155,23 @@ class _BackdropState extends State<Backdrop>
 
     final double flingVelocity =
         details.velocity.pixelsPerSecond.dy / _backdropHeight;
-    if (flingVelocity < 0.0)
+    if (flingVelocity < 0.0) {
+      setState(() {
+        _shouldDisplayCloseButton = true;
+      });
       _controller.fling(velocity: math.max(_kFlingVelocity, -flingVelocity));
-    else if (flingVelocity > 0.0)
+    } else if (flingVelocity > 0.0)
       _controller.fling(velocity: math.min(-_kFlingVelocity, -flingVelocity));
-    else
+    else {
+      if (_controller.value >= 0.5) {
+        setState(() {
+          _shouldDisplayCloseButton = true;
+        });
+      }
       _controller.fling(
           velocity:
               _controller.value < 0.5 ? -_kFlingVelocity : _kFlingVelocity);
+    }
   }
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
@@ -178,7 +191,7 @@ class _BackdropState extends State<Backdrop>
         PositionedTransition(
           rect: panelAnimation,
           child: _BackdropPanel(
-            onTap: _toggleBackdropPanelVisibility,
+            onTap: () => {toggleBackdropPanelVisibility},
             onVerticalDragUpdate: _handleDragUpdate,
             onVerticalDragEnd: _handleDragEnd,
             title: widget.frontTitle,
@@ -191,6 +204,20 @@ class _BackdropState extends State<Backdrop>
 
   @override
   Widget build(BuildContext context) {
+    return CubitConsumer<DrinksListCubit, DrinksListState>(
+      builder: (context, state) {
+        return _buildWidget();
+      },
+      listener: (context, state) {
+        if (state is DrinksListError) {
+          toggleBackdropPanelVisibility();
+        }
+        return _buildWidget();
+      },
+    );
+  }
+
+  Container _buildWidget() {
     return Container(
         key: _backdropKey,
         decoration: BoxDecoration(
@@ -201,45 +228,49 @@ class _BackdropState extends State<Backdrop>
         )),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            centerTitle: true,
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              iconSize: 30,
-              onPressed: _toggleBackdropPanelVisibility,
-              icon: Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-            ),
-            title: widget.backTitle,
-            actionsIconTheme: IconThemeData(
-              size: 30.0,
-              color: Colors.white,
-            ),
-            actions: _shouldDisplayCloseButton
-                ? <Widget>[
-                    Padding(
-                        padding: EdgeInsets.only(right: 20.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            _controller.fling(velocity: -_kFlingVelocity);
-                            setState(() {
-                              _shouldDisplayCloseButton = false;
-                            });
-                          },
-                          child: Icon(
-                            Icons.close,
-                            size: 26.0,
-                          ),
-                        )),
-                  ]
-                : [],
-          ),
+          appBar: _buildAppBar(),
           body: LayoutBuilder(
             builder: _buildStack,
           ),
         ));
+  }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      leading: IconButton(
+        iconSize: 30,
+        onPressed: toggleBackdropPanelVisibility,
+        icon: Icon(
+          Icons.menu,
+          color: Colors.white,
+        ),
+      ),
+      title: widget.backTitle,
+      actionsIconTheme: IconThemeData(
+        size: 30.0,
+        color: Colors.white,
+      ),
+      actions: _shouldDisplayCloseButton
+          ? <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      _controller.fling(velocity: -_kFlingVelocity);
+                      setState(() {
+                        _shouldDisplayCloseButton = false;
+                      });
+                    },
+                    child: Icon(
+                      Icons.close,
+                      size: 26.0,
+                    ),
+                  )),
+            ]
+          : [],
+    );
   }
 }

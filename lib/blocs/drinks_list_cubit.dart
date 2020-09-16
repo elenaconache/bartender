@@ -10,10 +10,10 @@ class DrinksListCubit extends CubitStream<DrinksListState> {
   DrinksListCubit({@required this.repository})
       : assert(repository != null),
         super(DrinksListInitial()) {
-    _getInitialData();
+    getInitialData();
   }
 
-  void _getInitialData() async {
+  void getInitialData() async {
     try {
       emit(DrinksListLoading());
       final ingredients = await repository.getIngredients();
@@ -22,7 +22,7 @@ class DrinksListCubit extends CubitStream<DrinksListState> {
       final categories = await repository.getCategories();
       emit(DrinksInitialListSuccess(drinks, ingredients, categories));
     } catch (e) {
-      emit(DrinksListError());
+      emit(DrinksListError(null, null));
     }
   }
 
@@ -37,10 +37,10 @@ class DrinksListCubit extends CubitStream<DrinksListState> {
         final drinks = await repository.getFilteredDrinks(category: category);
         emit(DrinksFilteredListSuccess(drinks, ingredient, category));
       } else {
-        emit(DrinksListError());
+        emit(DrinksListError(ingredient = ingredient, category = category));
       }
     } catch (e) {
-      emit(DrinksListError());
+      emit(DrinksListError(ingredient = ingredient, category = category));
     }
   }
 }

@@ -19,6 +19,11 @@ const _filterLabelTextStyle = TextStyle(
     fontSize: 16);
 const _dropdownOptionTextStyle =
     TextStyle(color: _hintColor, fontSize: 16, fontStyle: FontStyle.normal);
+const _hintTextStyle = TextStyle(
+  color: _hintColor,
+  fontSize: 16,
+  fontStyle: FontStyle.italic,
+);
 
 class FiltersPanel extends StatefulWidget {
   final List<Ingredient> ingredients;
@@ -86,12 +91,17 @@ class _FiltersPanelState extends State<FiltersPanel> {
   /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
-      if (widget.ingredient == null && widget.category == null) {
-        _ingredientFilter = widget.ingredients[0].name;
-        _categoryFilter = null;
-      } else {
-        _ingredientFilter = widget.ingredient;
-        _categoryFilter = widget.category;
+      if (widget.ingredients != null &&
+          widget.categories != null &&
+          widget.ingredients.isNotEmpty &&
+          widget.categories.isNotEmpty) {
+        if (widget.ingredient == null && widget.category == null) {
+          _ingredientFilter = widget.ingredients[0].name;
+          _categoryFilter = null;
+        } else {
+          _ingredientFilter = widget.ingredient;
+          _categoryFilter = widget.category;
+        }
       }
     });
   }
@@ -139,12 +149,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
                 size: 18,
                 color: _dropdownArrowColor,
               ),
-              hint: Text('Select an option',
-                  style: TextStyle(
-                    color: _hintColor,
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                  )),
+              hint: Text('Select an option', style: _hintTextStyle),
               isExpanded: true,
               value: currentValue,
               items: values,
@@ -238,54 +243,39 @@ class _FiltersPanelState extends State<FiltersPanel> {
                 _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
             Row(
               children: [
-                Container(
-                  height: 48,
-                  margin: EdgeInsets.only(top: 32.0),
-                  decoration: BoxDecoration(
-                    // This sets the color of the [DropdownButton] itself
-                    color: Colors.transparent,
-                    border: Border.all(
-                      color: _iconColor,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.undo),
-                    iconSize: 24.0,
-                    color: _iconColor,
-                    onPressed: _setDefaults,
-                  ),
-                ),
+                _buildUndoButton(),
                 Spacer(),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Container(
-                    height: 48,
-                    margin: EdgeInsets.only(top: 32),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          side: BorderSide(color: _iconColor)),
-                      padding: EdgeInsets.only(
-                          left: 56, right: 56, top: 16, bottom: 16),
-                      onPressed: () => {_filter()},
-                      color: _iconColor,
-                      child: PlatformText(
-                        'Show results',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Poppins',
-                            fontSize: 12),
-                      ),
-                    ),
-                  ),
+                  child: _buildShowResultsButton(),
                 )
               ],
             )
           ],
         ));
     return converter;
+  }
+
+  Widget _buildUndoButton() {
+    return Container(
+      height: 48,
+      margin: EdgeInsets.only(top: 32.0),
+      decoration: BoxDecoration(
+        // This sets the color of the [DropdownButton] itself
+        color: Colors.transparent,
+        border: Border.all(
+          color: _iconColor,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: IconButton(
+        icon: Icon(Icons.undo),
+        iconSize: 24.0,
+        color: _iconColor,
+        onPressed: _setDefaults,
+      ),
+    );
   }
 
   Widget _buildLandscapeWidget() {
@@ -335,55 +325,38 @@ class _FiltersPanelState extends State<FiltersPanel> {
                   flex: 1,
                   child: Align(
                       alignment: Alignment.centerRight,
-                      child: Container(
-                        height: 48,
-                        margin: EdgeInsets.only(top: 32.0, right: 4),
-                        decoration: BoxDecoration(
-                          // This sets the color of the [DropdownButton] itself
-                          color: Colors.transparent,
-                          border: Border.all(
-                            color: _iconColor,
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.undo),
-                          iconSize: 24.0,
-                          color: _iconColor,
-                          onPressed: _setDefaults,
-                        ),
-                      )),
+                      child: _buildUndoButton()),
                 ),
                 Expanded(
                     flex: 1,
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Container(
-                        height: 48,
-                        margin: EdgeInsets.only(top: 32, left: 4),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              side: BorderSide(color: _iconColor)),
-                          padding: EdgeInsets.only(
-                              left: 56, right: 56, top: 16, bottom: 16),
-                          onPressed: () => {_filter()},
-                          color: _iconColor,
-                          child: PlatformText(
-                            'Show results',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Poppins',
-                                fontSize: 12),
-                          ),
-                        ),
-                      ),
+                      child: _buildShowResultsButton(),
                     ))
               ],
             )
           ],
         ));
     return converter;
+  }
+
+  Widget _buildShowResultsButton() {
+    return Container(
+      height: 48,
+      margin: EdgeInsets.only(top: 32, left: 4),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            side: BorderSide(color: _iconColor)),
+        padding: EdgeInsets.only(left: 56, right: 56, top: 16, bottom: 16),
+        onPressed: () => {_filter()},
+        color: _iconColor,
+        child: PlatformText(
+          'Show results',
+          style: TextStyle(
+              color: Colors.white, fontFamily: 'Poppins', fontSize: 12),
+        ),
+      ),
+    );
   }
 }

@@ -72,96 +72,180 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
 
   Widget _buildWidget(DrinksListState state) {
     if (state is DrinksListLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+      return _buildLoadingWidget();
     } else if (state is DrinksListError) {
-      return Center(
-        child: Icon(Icons.close),
-      );
+      return _buildErrorBackdrop(state.ingredient, state.category);
     } else if (state is DrinksInitialListSuccess) {
-      List<Drink> drinks = state.drinks;
-      _drinks = drinks;
-      assert(debugCheckHasMediaQuery(context));
-      final listView = Padding(
-        padding: EdgeInsets.only(
-          left: 8.0,
-          right: 8.0,
-          bottom: 48.0,
-        ),
-        child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
-      );
-      ingredients = state.ingredients;
-      categories = state.categories;
-
-      _backdrop = Backdrop(
-          frontPanel: FiltersPanel(
-              ingredients: ingredients,
-              categories: categories,
-              category: null,
-              ingredient: null),
-          backPanel: listView,
-          frontTitle: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Filters'.toUpperCase(),
-                style: TextStyle(
-                    color: blueTextColor,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20),
-              )),
-          backTitle: Text(
-            'Drinks',
-            style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Poppins',
-                fontStyle: FontStyle.normal,
-                fontSize: 20),
-          ) //),
-          );
-      return _backdrop;
+      return _buildInitialBackdrop(state);
     } else if (state is DrinksFilteredListSuccess) {
-      List<Drink> drinks = state.drinks;
-      _drinks = drinks;
-      assert(debugCheckHasMediaQuery(context));
-      final listView = Padding(
-        padding: EdgeInsets.only(
-          left: 8.0,
-          right: 8.0,
-          bottom: 48.0,
+      return _buildFilteredBackdrop(state);
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildInitialBackdrop(DrinksInitialListSuccess state) {
+    List<Drink> drinks = state.drinks;
+    _drinks = drinks;
+    assert(debugCheckHasMediaQuery(context));
+    final listView = Padding(
+      padding: EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 48.0,
+      ),
+      child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
+    );
+    ingredients = state.ingredients;
+    categories = state.categories;
+    _backdrop = Backdrop(
+      frontPanel: FiltersPanel(
+          ingredients: ingredients,
+          categories: categories,
+          category: null,
+          ingredient: null),
+      backPanel: listView,
+      frontTitle: _buildFrontTitle(),
+      backTitle: _buildBackTitle(),
+    );
+    return _backdrop;
+  }
+
+  Widget _buildBackTitle() {
+    return Text(
+      'Drinks',
+      style: TextStyle(
+          color: Colors.white,
+          fontFamily: 'Poppins',
+          fontStyle: FontStyle.normal,
+          fontSize: 20),
+    ); //),
+  }
+
+  Widget _buildFrontTitle() {
+    return Align(
+        alignment: Alignment.center,
+        child: Text(
+          'Filters'.toUpperCase(),
+          style: TextStyle(
+              color: blueTextColor,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 20),
+        ));
+  }
+
+  Widget _buildFilteredBackdrop(DrinksFilteredListSuccess state) {
+    List<Drink> drinks = state.drinks;
+    _drinks = drinks;
+    assert(debugCheckHasMediaQuery(context));
+    final listView = Padding(
+      padding: EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 48.0,
+      ),
+      child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
+    );
+    _backdrop = Backdrop(
+        frontPanel: FiltersPanel(
+          ingredients: ingredients,
+          categories: categories,
+          ingredient: state.ingredient,
+          category: state.category,
         ),
-        child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
-      );
+        backPanel: listView,
+        frontTitle: _buildFrontTitle(),
+        backTitle: _buildBackTitle());
+    return _backdrop;
+  }
+
+  Widget _buildLoadingWidget() {
+    if (_backdrop == null) {
       _backdrop = Backdrop(
           frontPanel: FiltersPanel(
             ingredients: ingredients,
             categories: categories,
-            ingredient: state.ingredient,
-            category: state.category,
+            ingredient: null,
+            category: null,
           ),
-          backPanel: listView,
-          frontTitle: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Filters'.toUpperCase(),
-                style: TextStyle(
-                    color: blueTextColor,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20),
+          backPanel: Container(
+              margin: EdgeInsets.only(top: 20),
+              child: RefreshIndicator(
+                onRefresh: () => _retryLastRequest(null, null),
+                child: ListView(
+                  children: [
+                    Image.asset(
+                      'assets/images/wine.png',
+                      fit: BoxFit.fitWidth,
+                    ),
+                    Center(
+                        child: Text(
+                      'No drinks found. Pull to refresh.',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ))
+                  ],
+                ),
               )),
-          backTitle: Text(
-            'Drinks',
-            style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Poppins',
-                fontStyle: FontStyle.normal,
-                fontSize: 20),
-          ));
-      return _backdrop;
+          frontTitle: _buildFrontTitle(),
+          backTitle: _buildBackTitle());
+    }
+
+    return Stack(
+      children: [
+        _backdrop,
+        Center(
+          child: CircularProgressIndicator(),
+        )
+      ],
+    );
+  }
+
+  Widget _buildErrorBackdrop(String ingredient, String category) {
+    _backdrop = Backdrop(
+        frontPanel: FiltersPanel(
+          ingredients: ingredients,
+          categories: categories,
+          ingredient: null,
+          category: null,
+        ),
+        backPanel: Container(
+            margin: EdgeInsets.only(top: 20),
+            child: RefreshIndicator(
+              onRefresh: () => _retryLastRequest(ingredient, category),
+              child: ListView(
+                children: [
+                  Image.asset(
+                    'assets/images/wine.png',
+                    fit: BoxFit.fitWidth,
+                  ),
+                  Center(
+                      child: Text(
+                    'No drinks found. Pull to refresh.',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ))
+                ],
+              ),
+            )),
+        frontTitle: _buildFrontTitle(),
+        backTitle: _buildBackTitle());
+    return _backdrop;
+  }
+
+  Future<void> _retryLastRequest(String ingredient, String category) async {
+    final drinksCubit = context.cubit<DrinksListCubit>();
+    if (ingredient == null && category == null) {
+      drinksCubit.getInitialData();
     } else {
-      return Container();
+      drinksCubit.getFilteredData(ingredient: ingredient, category: category);
     }
   }
 }
