@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:bartender/blocs/drinks_list_cubit.dart';
-import 'package:bartender/blocs/drinks_list_states.dart';
+import 'package:bartender/blocs/list/drinks_list_cubit.dart';
+import 'package:bartender/blocs/list/drinks_list_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:meta/meta.dart';
@@ -47,7 +47,6 @@ class _BackdropPanel extends StatelessWidget {
             child: Container(
               //  color:
               height: 52.0,
-              //padding: EdgeInsetsDirectional.only(start: 16.0),
               alignment: AlignmentDirectional.center,
               child: DefaultTextStyle(
                 style: Theme.of(context).textTheme.headline6,
@@ -109,10 +108,7 @@ class _BackdropState extends State<Backdrop>
       value: 0,
       vsync: this,
     );
-    //  _controller.fling(velocity: -_kFlingVelocity);
-    // setState(() {
     _shouldDisplayCloseButton = false;
-    // });
   }
 
   @override

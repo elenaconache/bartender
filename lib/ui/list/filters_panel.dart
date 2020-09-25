@@ -1,4 +1,4 @@
-import 'package:bartender/blocs/drinks_list_cubit.dart';
+import 'file:///D:/flutter_apps/bartender/lib/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
 import 'package:flutter/material.dart';
@@ -87,8 +87,6 @@ class _FiltersPanelState extends State<FiltersPanel> {
     });
   }
 
-  /// Sets the default values for the 'from' and 'to' [Dropdown]s, and the
-  /// updated output value if a user had previously entered an input.
   void _setDefaults() {
     setState(() {
       if (widget.ingredients != null &&
@@ -261,7 +259,6 @@ class _FiltersPanelState extends State<FiltersPanel> {
       height: 48,
       margin: EdgeInsets.only(top: 32.0),
       decoration: BoxDecoration(
-        // This sets the color of the [DropdownButton] itself
         color: Colors.transparent,
         border: Border.all(
           color: _iconColor,
@@ -325,7 +322,10 @@ class _FiltersPanelState extends State<FiltersPanel> {
                   flex: 1,
                   child: Align(
                       alignment: Alignment.centerRight,
-                      child: _buildUndoButton()),
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 4),
+                        child: _buildUndoButton(),
+                      )),
                 ),
                 Expanded(
                     flex: 1,

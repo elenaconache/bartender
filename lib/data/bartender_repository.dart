@@ -25,4 +25,8 @@ class BartenderRepository {
   Future<List<Category>> getCategories() async {
     return apiClient.getCategories();
   }
+
+  Future<Drink> getDrink(String id) async {
+    return apiClient.getDrink(id);
+  }
 }

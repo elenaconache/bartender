@@ -1,10 +1,10 @@
 import 'package:bartender/data/api/api_client.dart';
 import 'package:bartender/data/bartender_repository.dart';
-import 'package:bartender/ui/drinks_list_screen.dart';
+import 'package:bartender/ui/list/drinks_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 
-import 'blocs/drinks_list_cubit.dart';
+import 'blocs/list/drinks_list_cubit.dart';
 
 void main() {
   runApp(BartenderApp());

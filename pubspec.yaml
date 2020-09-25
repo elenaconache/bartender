@@ -33,8 +33,10 @@ dependencies:
   equatable: ^1.0.0
   cubit: ^0.1.0
   flutter_cubit: ^0.1.0
-  cached_network_image: ^2.0.0
+  cached_network_image: ^2.3.0-beta
   flutter_platform_widgets: ^0.60.2
+  flutter_native_splash: ^0.1.9
+  photo_view: ^0.10.2
 #  flutter_svg: ^0.19.0
 
 dev_dependencies:
@@ -79,6 +81,10 @@ flutter:
           style: italic
         - asset: fonts/Poppins-SemiBold.ttf
           weight: 600
+
+flutter_native_splash:
+  #image: assets/images/splash.png
+  color: "ff004861" #flutter pub pub run flutter_native_splash:create to update the splash screen
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,14 +1,18 @@
-import 'package:bartender/blocs/drinks_list_cubit.dart';
-import 'package:bartender/blocs/drinks_list_states.dart';
+import 'package:bartender/blocs/detail/drink_cubit.dart';
+import 'package:bartender/blocs/list/drinks_list_cubit.dart';
+import 'package:bartender/blocs/list/drinks_list_states.dart';
+import 'package:bartender/data/api/api_client.dart';
+import 'package:bartender/data/bartender_repository.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
-import 'package:bartender/ui/drink_tile.dart';
-import 'package:bartender/ui/filters_panel.dart';
+import 'package:bartender/ui/detail/drink_details_screen.dart';
+import 'package:bartender/ui/list/drink_tile.dart';
+import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 
-import 'backdrop.dart';
+import '../backdrop.dart';
 
 const Color blueTextColor = Color(0xff004861);
 
@@ -25,7 +29,18 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
   List<Ingredient> ingredients = <Ingredient>[];
   List<Category> categories = <Category>[];
 
-  void _onDrinkTap(Drink drink) {}
+  void _onDrinkTap(Drink drink) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return CubitProvider<DrinkCubit>(
+          create: (context) => DrinkCubit(
+              repository: BartenderRepository(apiClient: ApiClient())),
+          child: DrinkDetailsScreen(drink),
+        );
+      }),
+    );
+  }
 
   /// Makes the correct number of rows for the list view, based on whether the
   /// device is portrait or landscape.
@@ -65,9 +80,6 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
         },
       ),
     );
-
-    // Based on the device size, figure out how to best lay out the list
-    // You can also use MediaQuery.of(context).size to calculate the orientation
   }
 
   Widget _buildWidget(DrinksListState state) {
@@ -169,28 +181,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
             ingredient: null,
             category: null,
           ),
-          backPanel: Container(
-              margin: EdgeInsets.only(top: 20),
-              child: RefreshIndicator(
-                onRefresh: () => _retryLastRequest(null, null),
-                child: ListView(
-                  children: [
-                    Image.asset(
-                      'assets/images/wine.png',
-                      fit: BoxFit.fitWidth,
-                    ),
-                    Center(
-                        child: Text(
-                      'No drinks found. Pull to refresh.',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ))
-                  ],
-                ),
-              )),
+          backPanel: Container(),
           frontTitle: _buildFrontTitle(),
           backTitle: _buildBackTitle());
     }

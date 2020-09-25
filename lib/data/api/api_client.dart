@@ -7,9 +7,6 @@ import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
 
 class ApiClient {
-  /// We use the `dart:io` HttpClient. More details: https://flutter.io/networking/
-  // We specify the type here for readability. Since we're defining a final
-  // field, the type is determined at initialization.
   final HttpClient _httpClient = HttpClient();
 
   final String _baseURL = 'www.thecocktaildb.com';
@@ -61,6 +58,17 @@ class ApiClient {
       categories.add(Category.fromJson(c));
     }
     return categories;
+  }
+
+  Future<Drink> getDrink(String id) async {
+    final uri = Uri.https(_baseURL, '/api/json/v1/1/lookup.php', {'i': id});
+    final jsonResponse = await _getJson(uri);
+    if (jsonResponse == null || jsonResponse['drinks'] == null) {
+      print('Error retrieving drink details.');
+      return null;
+    }
+    final Drink drink = Drink.fromJson(jsonResponse['drinks'][0]);
+    return drink;
   }
 
   /// Fetches and decodes a JSON object represented as a Dart [Map].
