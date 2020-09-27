@@ -18,7 +18,6 @@ class DrinkTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          print("called inkwell listener");
           onTap(drink);
         },
         child: Container(
