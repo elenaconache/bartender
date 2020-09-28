@@ -1,7 +1,9 @@
 import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/detail/drink_state.dart';
 import 'package:bartender/data/models/drink.dart';
+import 'package:bartender/ui/detail/drink_persistent_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 
@@ -58,18 +60,29 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
           end: Alignment.bottomCenter,
           colors: [gradientStartColor, gradientEndColor],
         )),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Container(
-              height: MediaQuery.of(context).size.height * 0.55,
-              child: Stack(fit: StackFit.expand, children: [
-                _buildImageWidget(),
-                _buildNameOverlayWidget(),
-              ])),
-          _buildTagsWidgets(drink),
-          _buildLabelWidget('Instructions'),
-          _buildTextWidget(drink.instructions),
-        ]));
+        child: CustomScrollView(
+          slivers: [
+            SliverPersistentHeader(
+              floating: false,
+              pinned: true,
+              delegate: DrinkPersistentHeader(
+                  collapsedHeight: 56,
+                  expandedHeight: 300,
+                  paddingTop: 4,
+                  drink: drink),
+            ),
+            SliverToBoxAdapter(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                _buildTagsWidgets(drink),
+                _buildLabelWidget('Instructions'),
+                _buildTextWidget(drink.instructions),
+              ],
+            ))
+          ],
+        ));
     // }else{//todo different widget
   }
 
@@ -144,121 +157,20 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
     drinkCubit.getDrinkData(widget.drink.id);
   }
 
-  Widget _buildImageWidget() {
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(48),
-      ),
-      child: Hero(
-        tag: widget.drink.imageURL,
-        child: CachedNetworkImage(
-          imageUrl: widget.drink.imageURL,
-          placeholder: (context, url) => Center(
-            child: SizedBox(
-              width: 48,
-              height: 48,
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNameOverlayWidget() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Wrap(
-        children: [
-          Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.transparent),
-                  borderRadius:
-                      BorderRadius.only(bottomLeft: Radius.circular(48.0)),
-                  color: Color(
-                      0x80000000) // Specifies the background color and the opacity
-                  ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 24),
-                  child: Text(
-                    widget.drink.name,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20),
-                  ),
-                ),
-              ))
-        ],
-      ),
-    );
-  }
-
   Widget _buildTagsWidgets(Drink drink) {
     return Container(
-        margin: EdgeInsets.only(top: 24, left: 32, right: 32),
+        margin: EdgeInsets.only(top: 12, left: 24, right: 24),
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Icon(
-                  Icons.pan_tool,
-                  color: Colors.white,
-                  size: 24.0,
-                ),
-              ),
-              Text(
-                drink.alcoholic, //todo null safety
-                style: TextStyle(
-                    color: Colors.white, fontFamily: 'Poppins', fontSize: 18),
-              ),
-            ],
-          ),
-          Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Row(children: [
-                Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Icon(
-                      Icons.local_drink,
-                      color: Colors.white,
-                    )),
-                Text(
-                  drink.glass,
-                  style: TextStyle(
-                      color: Colors.white, fontFamily: 'Poppins', fontSize: 18),
-                ),
-              ])),
-          Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Row(children: [
-                Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Icon(
-                      Icons.category,
-                      color: Colors.white,
-                    )),
-                Text(
-                  drink.category,
-                  style: TextStyle(
-                      color: Colors.white, fontFamily: 'Poppins', fontSize: 18),
-                ),
-              ]))
+          _buildTagWidget(drink.alcoholic, Icons.pan_tool),
+          _buildTagWidget(drink.glass, Icons.local_drink),
+          _buildTagWidget(drink.category, Icons.category),
         ]));
   }
 
   Widget _buildLabelWidget(String s) {
     return Padding(
-      padding: EdgeInsets.only(left: 24, top: 24, right: 24),
+      padding: EdgeInsets.only(left: 24, top: 12, right: 24),
       child: Text(
         s,
         style: TextStyle(
@@ -282,5 +194,28 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
             fontFamily: 'Poppins',
           ),
         ));
+  }
+
+  Widget _buildTagWidget(String text, IconData ic) {
+    return Padding(
+      padding: EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: Icon(
+              ic,
+              color: Colors.white,
+              size: 24.0,
+            ),
+          ),
+          Text(
+            text, //todo null safety
+            style: TextStyle(
+                color: Colors.white, fontFamily: 'Poppins', fontSize: 18),
+          ),
+        ],
+      ),
+    );
   }
 }
