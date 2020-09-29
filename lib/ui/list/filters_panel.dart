@@ -1,10 +1,8 @@
-import 'file:///D:/flutter_apps/bartender/lib/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:meta/meta.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
 
 const _padding = EdgeInsets.all(16.0);
 const _labelColor = Color(0xff3333333);
@@ -30,12 +28,16 @@ class FiltersPanel extends StatefulWidget {
   final List<Category> categories;
   final String ingredient;
   final String category;
+  final onCategorySelected;
+  final onIngredientSelected;
 
   FiltersPanel(
       {@required this.ingredients,
       @required this.categories,
       @required this.ingredient,
-      @required this.category});
+      @required this.category,
+      @required this.onCategorySelected,
+      @required this.onIngredientSelected});
 
   @override
   _FiltersPanelState createState() => _FiltersPanelState();
@@ -172,21 +174,11 @@ class _FiltersPanelState extends State<FiltersPanel> {
             : _buildLandscapeWidget());
   }
 
-  void _onIngredientSelected() {
-    final drinksCubit = context.cubit<DrinksListCubit>();
-    drinksCubit.getFilteredData(ingredient: _ingredientFilter);
-  }
-
-  void _onCategorySelected() {
-    final drinksCubit = context.cubit<DrinksListCubit>();
-    drinksCubit.getFilteredData(category: _categoryFilter);
-  }
-
   void _filter() {
     if (_ingredientFilter == null) {
-      _onCategorySelected();
+      widget.onCategorySelected(_categoryFilter);
     } else {
-      _onIngredientSelected();
+      widget.onIngredientSelected(_ingredientFilter);
     }
   }
 

@@ -112,10 +112,13 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
     categories = state.categories;
     _backdrop = Backdrop(
       frontPanel: FiltersPanel(
-          ingredients: ingredients,
-          categories: categories,
-          category: null,
-          ingredient: null),
+        ingredients: ingredients,
+        categories: categories,
+        category: null,
+        ingredient: null,
+        onCategorySelected: _onCategorySelected,
+        onIngredientSelected: _onIngredientSelected,
+      ),
       backPanel: listView,
       frontTitle: _buildFrontTitle(),
       backTitle: _buildBackTitle(),
@@ -165,6 +168,8 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
           categories: categories,
           ingredient: state.ingredient,
           category: state.category,
+          onCategorySelected: _onCategorySelected,
+          onIngredientSelected: _onIngredientSelected,
         ),
         backPanel: listView,
         frontTitle: _buildFrontTitle(),
@@ -180,6 +185,8 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
             categories: categories,
             ingredient: null,
             category: null,
+            onCategorySelected: _onCategorySelected,
+            onIngredientSelected: _onIngredientSelected,
           ),
           backPanel: Container(),
           frontTitle: _buildFrontTitle(),
@@ -196,6 +203,16 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
     );
   }
 
+  void _onIngredientSelected(_ingredientFilter) {
+    final drinksCubit = context.cubit<DrinksListCubit>();
+    drinksCubit.getFilteredData(ingredient: _ingredientFilter);
+  }
+
+  void _onCategorySelected(_categoryFilter) {
+    final drinksCubit = context.cubit<DrinksListCubit>();
+    drinksCubit.getFilteredData(category: _categoryFilter);
+  }
+
   Widget _buildErrorBackdrop(String ingredient, String category) {
     _backdrop = Backdrop(
         frontPanel: FiltersPanel(
@@ -203,6 +220,8 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
           categories: categories,
           ingredient: null,
           category: null,
+          onCategorySelected: _onCategorySelected,
+          onIngredientSelected: _onIngredientSelected,
         ),
         backPanel: Container(
             margin: EdgeInsets.only(top: 20),
