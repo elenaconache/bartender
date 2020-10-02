@@ -8,6 +8,7 @@ class Drink {
   final String category;
   final String glass;
   final String alcoholic;
+  final String mainIngredient;
 
   Drink(
       {@required this.name,
@@ -16,7 +17,8 @@ class Drink {
       this.instructions,
       this.category,
       this.glass,
-      this.alcoholic})
+      this.alcoholic,
+      this.mainIngredient})
       : assert(name != null),
         assert(id != null);
 
@@ -29,5 +31,6 @@ class Drink {
         instructions = jsonMap['strInstructions'],
         category = jsonMap['strCategory'],
         glass = jsonMap['strGlass'],
-        alcoholic = jsonMap['strAlcoholic'];
+        alcoholic = jsonMap['strAlcoholic'],
+        mainIngredient = jsonMap['strIngredient1'];
 }

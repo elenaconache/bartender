@@ -224,22 +224,27 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
           onIngredientSelected: _onIngredientSelected,
         ),
         backPanel: Container(
-            margin: EdgeInsets.only(top: 20),
+            margin: EdgeInsets.only(top: 48),
             child: RefreshIndicator(
               onRefresh: () => _retryLastRequest(ingredient, category),
               child: ListView(
                 children: [
                   Image.asset(
-                    'assets/images/wine.png',
-                    fit: BoxFit.fitWidth,
+                    'assets/images/waterglass.png',
+                    fit: BoxFit.fitHeight,
+                    height: 160,
                   ),
                   Center(
-                      child: Text(
-                    'No drinks found. Pull to refresh.',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: Colors.white,
-                      fontSize: 14,
+                      child: Padding(
+                    padding: EdgeInsets.only(top: 24, left: 24, right: 24),
+                    child: Text(
+                      'It\'s time to drink some water and check your connection',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
                     ),
                   ))
                 ],
