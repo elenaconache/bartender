@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLSchemes</key>
+	<array>
+		<string>com.googleusercontent.apps.527674689302-1itu4s7j5lid2sela650aqh1kl04191k</string>
+	</array>
+	<key>CFBundleTypeRole</key>
+	<string>Editor</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -43,6 +49,5 @@
 	<false/>
 	<key>UIStatusBarHidden</key>
 	<true/>
-
 </dict>
 </plist>
