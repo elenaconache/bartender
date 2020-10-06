@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 const double _kFlingVelocity = 2.0;
 const Color gradientStartColor = Color(0xff004861);
 const Color gradientEndColor = Color(0xff013E53);
-const _frontTitleBackground = Color(0xffEBEEF1);
+const frontTitleBackground = Color(0xffEBEEF1);
 
 class _BackdropPanel extends StatelessWidget {
   _BackdropPanel({
@@ -31,7 +31,7 @@ class _BackdropPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 2.0,
-      color: _frontTitleBackground,
+      color: frontTitleBackground,
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(20.0),
         topRight: Radius.circular(20.0),

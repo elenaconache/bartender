@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "527674689302",
+    "firebase_url": "https://bartender-75935.firebaseio.com",
+    "project_id": "bartender-75935",
+    "storage_bucket": "bartender-75935.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527674689302:android:3be4c3f124dd1e8133b237",
+        "android_client_info": {
+          "package_name": "ro.codeswitch.bartender"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527674689302-k7vnci2selgfnt4ee9flr0vs1gkru0c2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ro.codeswitch.bartender",
+            "certificate_hash": "d8a8faeb2becfe36df8f878d495a9f36b1582f88"
+          }
+        },
+        {
+          "client_id": "527674689302-h3g1092rm68stlqrt9tdt0egklb12ihn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvIdb92I2Nd-jw_53e_myIdkH87JG6pzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527674689302-h3g1092rm68stlqrt9tdt0egklb12ihn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "527674689302-1itu4s7j5lid2sela650aqh1kl04191k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ro.codeswitch.bartender"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

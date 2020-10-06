@@ -1,4 +1,4 @@
-import 'package:bartender/data/bartender_repository.dart';
+import 'package:bartender/data/repository/bartender_repository.dart';
 import 'package:cubit/cubit.dart';
 import 'package:meta/meta.dart';
 

@@ -1,10 +1,8 @@
-import 'package:bartender/data/api/api_client.dart';
-import 'package:bartender/data/bartender_repository.dart';
-import 'package:bartender/ui/list/drinks_list_screen.dart';
+import 'package:bartender/blocs/login/login_cubit.dart';
+import 'package:bartender/data/repository/login_repository.dart';
+import 'package:bartender/ui/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-
-import 'blocs/list/drinks_list_cubit.dart';
 
 void main() {
   runApp(BartenderApp());
@@ -33,10 +31,9 @@ class BartenderApp extends StatelessWidget {
           // closer together (more dense) than on mobile platforms.
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: CubitProvider<DrinksListCubit>(
-          create: (context) => DrinksListCubit(
-              repository: BartenderRepository(apiClient: ApiClient())),
-          child: DrinksListScreen(),
+        home: CubitProvider<LoginCubit>(
+          create: (context) => LoginCubit(repository: GoogleSignInRepository()),
+          child: LoginScreen(),
         ));
   }
 }

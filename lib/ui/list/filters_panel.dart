@@ -8,7 +8,7 @@ const _padding = EdgeInsets.all(16.0);
 const _labelColor = Color(0xff3333333);
 const _borderColor = Color(0x1500001F);
 const _hintColor = Color(0xff000000);
-const _iconColor = Color(0xff004861);
+const iconColor = Color(0xff004861);
 const _dropdownArrowColor = Color(0xff606262);
 const _filterLabelTextStyle = TextStyle(
     color: _labelColor,
@@ -253,7 +253,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(
-          color: _iconColor,
+          color: iconColor,
           width: 2.0,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -261,7 +261,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
       child: IconButton(
         icon: Icon(Icons.undo),
         iconSize: 24.0,
-        color: _iconColor,
+        color: iconColor,
         onPressed: _setDefaults,
       ),
     );
@@ -339,10 +339,10 @@ class _FiltersPanelState extends State<FiltersPanel> {
       child: RaisedButton(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: _iconColor)),
+            side: BorderSide(color: iconColor)),
         padding: EdgeInsets.only(left: 56, right: 56, top: 16, bottom: 16),
         onPressed: () => {_filter()},
-        color: _iconColor,
+        color: iconColor,
         child: PlatformText(
           'Show results',
           style: TextStyle(

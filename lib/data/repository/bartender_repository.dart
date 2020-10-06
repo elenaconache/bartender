@@ -1,11 +1,10 @@
 import 'dart:async';
 
+import 'package:bartender/data/api/api_client.dart';
+import 'package:bartender/data/models/category.dart';
+import 'package:bartender/data/models/drink.dart';
+import 'package:bartender/data/models/ingredient.dart';
 import 'package:meta/meta.dart';
-
-import 'api/api_client.dart';
-import 'models/category.dart';
-import 'models/drink.dart';
-import 'models/ingredient.dart';
 
 class BartenderRepository {
   final ApiClient apiClient;
