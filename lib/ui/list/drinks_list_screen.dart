@@ -6,6 +6,7 @@ import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
 import 'package:bartender/data/repository/bartender_repository.dart';
+import 'package:bartender/i18n/localizations.dart';
 import 'package:bartender/ui/detail/drink_details_screen.dart';
 import 'package:bartender/ui/list/drink_tile.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
@@ -128,7 +129,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
 
   Widget _buildBackTitle() {
     return Text(
-      'Drinks',
+      BartenderLocalizations.of(context).drinksLabel,
       style: TextStyle(
           color: Colors.white,
           fontFamily: 'Poppins',
@@ -141,7 +142,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
     return Align(
         alignment: Alignment.center,
         child: Text(
-          'Filters'.toUpperCase(),
+          BartenderLocalizations.of(context).filtersLabel.toUpperCase(),
           style: TextStyle(
               color: blueTextColor,
               fontFamily: 'Poppins',
@@ -238,7 +239,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
                       child: Padding(
                     padding: EdgeInsets.only(top: 24, left: 24, right: 24),
                     child: Text(
-                      'It\'s time to drink some water and check your connection',
+                      BartenderLocalizations.of(context).connectionList,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Poppins',

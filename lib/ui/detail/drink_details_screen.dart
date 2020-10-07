@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/detail/drink_state.dart';
 import 'package:bartender/data/models/drink.dart';
+import 'package:bartender/i18n/localizations.dart';
 import 'package:bartender/ui/detail/drink_persistent_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,8 +13,6 @@ import 'package:flutter_cubit/flutter_cubit.dart';
 import '../backdrop.dart';
 
 const Color blueTextColor = Color(0xff004861);
-const servingBodyText =
-    'Anything is better served with your friends! Please be aware that an excessive amount of alcohol might lead to health issues.';
 
 class DrinkDetailsScreen extends StatefulWidget {
   final Drink drink;
@@ -171,13 +170,17 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 12),
-                  child: _buildTitleWidget('Related tags'),
+                  child: _buildTitleWidget(
+                      BartenderLocalizations.of(context).relatedTagsLabel),
                 ),
                 _buildTagsWidgets(drink),
-                _buildTitleWidget('How do I make it?'),
+                _buildTitleWidget(
+                    BartenderLocalizations.of(context).howToMakeLabel),
                 _buildTextWidget(drink.instructions),
-                _buildTitleWidget('Serving suggestion'),
-                _buildTextWidget(servingBodyText),
+                _buildTitleWidget(
+                    BartenderLocalizations.of(context).servingLabel),
+                _buildTextWidget(
+                    BartenderLocalizations.of(context).servingSuggestion),
               ],
             ))
           ],
@@ -224,10 +227,13 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                     children: <Widget>[
                       _buildTitleWidget(drink.name),
                       _buildTagsWidgets(drink),
-                      _buildTitleWidget('How do I make it?'),
+                      _buildTitleWidget(
+                          BartenderLocalizations.of(context).howToMakeLabel),
                       _buildTextWidget(drink.instructions),
-                      _buildTitleWidget('Serving suggestion'),
-                      _buildTextWidget(servingBodyText),
+                      _buildTitleWidget(
+                          BartenderLocalizations.of(context).servingLabel),
+                      _buildTextWidget(
+                          BartenderLocalizations.of(context).servingSuggestion),
                     ],
                   )))
         ],
@@ -265,8 +271,10 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                     child: Center(
                       child: CircularProgressIndicator(),
                     )),
-                _buildTitleWidget('Serving suggestion'),
-                _buildTextWidget(servingBodyText),
+                _buildTitleWidget(
+                    BartenderLocalizations.of(context).servingLabel),
+                _buildTextWidget(
+                    BartenderLocalizations.of(context).servingSuggestion),
               ],
             ))
           ],
@@ -318,8 +326,10 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                           child: Center(
                             child: CircularProgressIndicator(),
                           )),
-                      _buildTitleWidget('Serving suggestion'),
-                      _buildTextWidget(servingBodyText),
+                      _buildTitleWidget(
+                          BartenderLocalizations.of(context).servingLabel),
+                      _buildTextWidget(
+                          BartenderLocalizations.of(context).servingSuggestion),
                     ],
                   )))
         ],
@@ -363,7 +373,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                         )),
                     Expanded(
                         child: Text(
-                      'Check your connection for more details',
+                      BartenderLocalizations.of(context).connectionDetails,
                       style: TextStyle(
                           color: Colors.redAccent,
                           fontFamily: 'Poppins',
@@ -371,8 +381,10 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                     )),
                   ]),
                 ),
-                _buildTitleWidget('Serving suggestion'),
-                _buildTextWidget(servingBodyText),
+                _buildTitleWidget(
+                    BartenderLocalizations.of(context).servingLabel),
+                _buildTextWidget(
+                    BartenderLocalizations.of(context).servingSuggestion),
               ],
             ))
           ],
@@ -430,7 +442,8 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                               )),
                           Expanded(
                               child: Text(
-                            'Check your connection for more details',
+                            BartenderLocalizations.of(context)
+                                .connectionDetails,
                             style: TextStyle(
                                 color: Colors.redAccent,
                                 fontFamily: 'Poppins',
@@ -438,8 +451,10 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                           )),
                         ]),
                       ),
-                      _buildTitleWidget('Serving suggestion'),
-                      _buildTextWidget(servingBodyText),
+                      _buildTitleWidget(
+                          BartenderLocalizations.of(context).servingLabel),
+                      _buildTextWidget(
+                          BartenderLocalizations.of(context).servingSuggestion),
                     ],
                   )))
         ],

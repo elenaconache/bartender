@@ -3,6 +3,7 @@ import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/login/login_states.dart';
 import 'package:bartender/data/api/api_client.dart';
 import 'package:bartender/data/repository/bartender_repository.dart';
+import 'package:bartender/i18n/localizations.dart';
 import 'package:bartender/ui/list/drinks_list_screen.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
@@ -26,22 +27,11 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildBody(LoginState state) {
     if (state is LoginEmpty) {
-      return Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [gradientStartColor, gradientEndColor],
-          )),
-          child: Stack(
-            children: [
-              _buildWelcomeImage(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[_buildWelcomeTexts(), _buildSignInButton()],
-              )
-            ],
-          ));
+      if (MediaQuery.of(context).orientation == Orientation.portrait) {
+        return _buildPortraitBody();
+      } else {
+        return _buildLandscapeBody();
+      }
     } else {
       //login success/ already logged in/ initial
       return Container(
@@ -84,19 +74,16 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildWelcomeImage() {
     return Center(
-      child: Container(
-          margin: EdgeInsets.all(12),
-          child: Image.asset(
-            'assets/images/alcohol.png',
-            fit: BoxFit.contain,
-          )),
-    );
+        child: Image.asset(
+      'assets/images/wine.png',
+      fit: BoxFit.contain,
+    ));
   }
 
-  Widget _buildWelcomeTexts() {
+  Widget _buildWelcomeTextsPortrait() {
     return Container(
         margin: EdgeInsets.all(24),
-        height: 200,
+        height: 400,
         width: double.infinity,
         child: Row(
           children: [
@@ -107,7 +94,7 @@ class LoginScreenState extends State<LoginScreen> {
                     child: RotatedBox(
                       quarterTurns: 1,
                       child: Text(
-                        'Sign in',
+                        BartenderLocalizations.of(context).actionLogin,
                         style: TextStyle(
                             fontSize: 56,
                             color: Colors.white,
@@ -120,7 +107,7 @@ class LoginScreenState extends State<LoginScreen> {
                 child: Container(
                   height: double.infinity,
                   child: Text(
-                    'The Bartender will offer you creative drinks ideas. Are you ready to be impressed?',
+                    BartenderLocalizations.of(context).bartenderOffer,
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -132,25 +119,122 @@ class LoginScreenState extends State<LoginScreen> {
         ));
   }
 
+  Widget _buildWelcomeTextsLandscape() {
+    return Row(
+      children: [
+        Expanded(
+            flex: 1,
+            child: Container(
+                height: double.infinity,
+                child: RotatedBox(
+                  quarterTurns: 1,
+                  child: Text(
+                    BartenderLocalizations.of(context).actionLogin,
+                    style: TextStyle(
+                        fontSize: 48,
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500),
+                  ),
+                ))),
+        Expanded(
+            flex: 3,
+            child: Stack(
+              children: [
+                Text(
+                  BartenderLocalizations.of(context).bartenderOffer,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildSignInButton(),
+                )
+              ],
+            ))
+      ],
+    );
+  }
+
   Widget _buildSignInButton() {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
           width: double.infinity,
-          margin: EdgeInsets.only(top: 48, bottom: 24, left: 24, right: 24),
+          margin: EdgeInsets.only(top: 24, bottom: 24, left: 8, right: 8),
           child: RaisedButton(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 side: BorderSide(color: Colors.white, width: 2)),
-            padding: EdgeInsets.only(left: 56, right: 56, top: 16, bottom: 16),
+            padding: EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 16),
             onPressed: () => {_handleSignIn()},
             color: iconColor,
             child: PlatformText(
-              'Join with Google',
+              BartenderLocalizations.of(context).actionGoogle,
               style: TextStyle(
                   color: Colors.white, fontFamily: 'Poppins', fontSize: 16),
             ),
           ),
+        ));
+  }
+
+  Widget _buildPortraitBody() {
+    return Container(
+        padding: EdgeInsets.only(top: 24, bottom: 24),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [gradientStartColor, gradientEndColor],
+        )),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Expanded(
+                flex: 5,
+                child: Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 120),
+                      child: _buildWelcomeImage(),
+                    ),
+                    _buildWelcomeTextsPortrait(),
+                  ],
+                )),
+            Expanded(
+                flex: 1,
+                child: Padding(
+                    padding: EdgeInsets.only(left: 24, right: 24),
+                    child: _buildSignInButton()))
+          ],
+        ));
+  }
+
+  Widget _buildLandscapeBody() {
+    return Container(
+        padding: EdgeInsets.all(48),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [gradientStartColor, gradientEndColor],
+        )),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: _buildWelcomeImage(),
+            ),
+            Expanded(
+                flex: 3,
+                child: Container(
+                  margin: EdgeInsets.only(top: 24, bottom: 24),
+                  child: _buildWelcomeTextsLandscape(),
+                ))
+          ],
         ));
   }
 }

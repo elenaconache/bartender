@@ -1,5 +1,6 @@
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
+import 'package:bartender/i18n/localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:meta/meta.dart';
@@ -149,7 +150,8 @@ class _FiltersPanelState extends State<FiltersPanel> {
                 size: 18,
                 color: _dropdownArrowColor,
               ),
-              hint: Text('Select an option', style: _hintTextStyle),
+              hint: Text(BartenderLocalizations.of(context).actionSelectOption,
+                  style: _hintTextStyle),
               isExpanded: true,
               value: currentValue,
               items: values,
@@ -200,7 +202,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
               color: Colors.white,
             ),
             Text(
-              "Filters are currently unavailable.",
+              BartenderLocalizations.of(context).filtersUnavailable,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline6.copyWith(
                     color: Colors.white,
@@ -219,13 +221,14 @@ class _FiltersPanelState extends State<FiltersPanel> {
         ),
         child: ListView(
           children: [
-            Text('Ingredient', style: _filterLabelTextStyle),
+            Text(BartenderLocalizations.of(context).ingredientLabel,
+                style: _filterLabelTextStyle),
             _createDropdown(_ingredientFilter, _updateIngredientFilter,
                 _ingredientMenuItems),
             Padding(
               padding: EdgeInsets.only(top: 24),
               child: Text(
-                'Category',
+                BartenderLocalizations.of(context).categoryLabel,
                 style: _filterLabelTextStyle,
               ),
             ),
@@ -278,12 +281,14 @@ class _FiltersPanelState extends State<FiltersPanel> {
               children: [
                 Expanded(
                   flex: 1,
-                  child: Text('Ingredient', style: _filterLabelTextStyle),
+                  child: Text(
+                      BartenderLocalizations.of(context).ingredientLabel,
+                      style: _filterLabelTextStyle),
                 ),
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'Category',
+                    BartenderLocalizations.of(context).categoryLabel,
                     style: _filterLabelTextStyle,
                   ),
                 )
@@ -344,7 +349,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
         onPressed: () => {_filter()},
         color: iconColor,
         child: PlatformText(
-          'Show results',
+          BartenderLocalizations.of(context).actionResults,
           style: TextStyle(
               color: Colors.white, fontFamily: 'Poppins', fontSize: 12),
         ),
