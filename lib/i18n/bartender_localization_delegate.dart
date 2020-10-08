@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-import 'localizations.dart';
+import 'bartender_localizations.dart';
 
 class BartenderLocalizationsDelegate
     extends LocalizationsDelegate<BartenderLocalizations> {

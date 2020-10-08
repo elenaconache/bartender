@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/detail/drink_state.dart';
 import 'package:bartender/data/models/drink.dart';
-import 'package:bartender/i18n/localizations.dart';
+import 'package:bartender/i18n/bartender_localizations.dart';
 import 'package:bartender/ui/detail/drink_persistent_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';

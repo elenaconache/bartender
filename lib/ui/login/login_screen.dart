@@ -1,16 +1,14 @@
 import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/login/login_states.dart';
-import 'package:bartender/data/api/api_client.dart';
-import 'package:bartender/data/repository/bartender_repository.dart';
-import 'package:bartender/i18n/localizations.dart';
+import 'package:bartender/dependency_injection.dart';
+import 'package:bartender/i18n/bartender_localizations.dart';
+import 'package:bartender/ui/backdrop.dart';
 import 'package:bartender/ui/list/drinks_list_screen.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-
-import '../backdrop.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -59,8 +57,7 @@ class LoginScreenState extends State<LoginScreen> {
             Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (context) {
               return CubitProvider<DrinksListCubit>(
-                create: (context) => DrinksListCubit(
-                    repository: BartenderRepository(apiClient: ApiClient())),
+                create: (context) => getIt.get<DrinksListCubit>(),
                 child: DrinksListScreen(),
               );
             }), (Route<dynamic> route) => false);

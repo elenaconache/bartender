@@ -1,6 +1,6 @@
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
-import 'package:bartender/i18n/localizations.dart';
+import 'package:bartender/i18n/bartender_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:meta/meta.dart';
@@ -277,42 +277,8 @@ class _FiltersPanelState extends State<FiltersPanel> {
         ),
         child: ListView(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                      BartenderLocalizations.of(context).ingredientLabel,
-                      style: _filterLabelTextStyle),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    BartenderLocalizations.of(context).categoryLabel,
-                    style: _filterLabelTextStyle,
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 4),
-                    child: _createDropdown(_ingredientFilter,
-                        _updateIngredientFilter, _ingredientMenuItems),
-                  ),
-                ),
-                Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 4),
-                      child: _createDropdown(_categoryFilter,
-                          _updateCategoryFilter, _categoryMenuItems),
-                    ))
-              ],
-            ),
+            _buildFiltersLabelsLandscape(),
+            _buildFiltersDropdownsLandscape(),
             Row(
               children: [
                 Expanded(
@@ -354,6 +320,47 @@ class _FiltersPanelState extends State<FiltersPanel> {
               color: Colors.white, fontFamily: 'Poppins', fontSize: 12),
         ),
       ),
+    );
+  }
+
+  Widget _buildFiltersLabelsLandscape() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Text(BartenderLocalizations.of(context).ingredientLabel,
+              style: _filterLabelTextStyle),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text(
+            BartenderLocalizations.of(context).categoryLabel,
+            style: _filterLabelTextStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildFiltersDropdownsLandscape() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: _createDropdown(_ingredientFilter, _updateIngredientFilter,
+                _ingredientMenuItems),
+          ),
+        ),
+        Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.only(left: 4),
+              child: _createDropdown(
+                  _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
+            ))
+      ],
     );
   }
 }

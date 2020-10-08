@@ -1,12 +1,14 @@
 import 'package:bartender/blocs/login/login_cubit.dart';
-import 'package:bartender/data/repository/login_repository.dart';
-import 'package:bartender/i18n/localization_delegate.dart';
 import 'package:bartender/ui/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'dependency_injection.dart';
+import 'i18n/bartender_localization_delegate.dart';
+
 void main() {
+  inject();
   runApp(BartenderApp());
 }
 
@@ -34,7 +36,7 @@ class BartenderApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: CubitProvider<LoginCubit>(
-        create: (context) => LoginCubit(repository: GoogleSignInRepository()),
+        create: (context) => getIt.get<LoginCubit>(),
         child: LoginScreen(),
       ),
       localizationsDelegates: [

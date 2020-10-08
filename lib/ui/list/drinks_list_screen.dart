@@ -1,19 +1,17 @@
 import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/list/drinks_list_states.dart';
-import 'package:bartender/data/api/api_client.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
-import 'package:bartender/data/repository/bartender_repository.dart';
-import 'package:bartender/i18n/localizations.dart';
+import 'package:bartender/dependency_injection.dart';
+import 'package:bartender/i18n/bartender_localizations.dart';
+import 'package:bartender/ui/backdrop.dart';
 import 'package:bartender/ui/detail/drink_details_screen.dart';
 import 'package:bartender/ui/list/drink_tile.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-
-import '../backdrop.dart';
 
 const Color blueTextColor = Color(0xff004861);
 
@@ -35,8 +33,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
       context,
       MaterialPageRoute(builder: (context) {
         return CubitProvider<DrinkCubit>(
-          create: (context) => DrinkCubit(
-              repository: BartenderRepository(apiClient: ApiClient())),
+          create: (context) => getIt.get<DrinkCubit>(),
           child: DrinkDetailsScreen(drink),
         );
       }),

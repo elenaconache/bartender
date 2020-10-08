@@ -1,4 +1,4 @@
-import 'package:bartender/data/repository/login_repository.dart';
+import 'package:bartender/data/repository/google_signin_repository.dart';
 import 'package:cubit/cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';

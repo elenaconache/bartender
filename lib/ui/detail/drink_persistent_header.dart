@@ -70,50 +70,54 @@ class DrinkPersistentHeader extends SliverPersistentHeaderDelegate {
               fit: BoxFit.cover,
             ),
           ),
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            child: Container(
-                color: this.makeStickyHeaderBgColor(shrinkOffset),
-                // Background color
-                child: SafeArea(
-                  bottom: false,
-                  child: Container(
-                      width: double.infinity,
-                      height: this.collapsedHeight,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(
-                              Icons.arrow_back_ios,
-                              size: 24,
-                              color: this.makeStickyHeaderTextColor(
-                                  shrinkOffset, true), // Return icon color
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          Expanded(
-                              child: Container(
-                                  padding: EdgeInsets.only(right: 48),
-                                  child: Center(
-                                      child: Text(
-                                    drink.name,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: this.makeStickyHeaderTextColor(
-                                            shrinkOffset, true),
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 20),
-                                  ))))
-                        ],
-                      )),
-                )),
-          ),
+          _buildToolbar(context, shrinkOffset),
         ],
       ),
+    );
+  }
+
+  Widget _buildToolbar(BuildContext context, double shrinkOffset) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      top: 0,
+      child: Container(
+          color: this.makeStickyHeaderBgColor(shrinkOffset),
+          // Background color
+          child: SafeArea(
+            bottom: false,
+            child: Container(
+                width: double.infinity,
+                height: this.collapsedHeight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        size: 24,
+                        color: this.makeStickyHeaderTextColor(
+                            shrinkOffset, true), // Return icon color
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Expanded(
+                        child: Container(
+                            padding: EdgeInsets.only(right: 48),
+                            child: Center(
+                                child: Text(
+                              drink.name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: this.makeStickyHeaderTextColor(
+                                      shrinkOffset, true),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20),
+                            ))))
+                  ],
+                )),
+          )),
     );
   }
 }
