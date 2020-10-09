@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/detail/drink_state.dart';
+import 'package:bartender/constants.dart';
 import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
 import 'package:bartender/ui/detail/drink_persistent_header.dart';
@@ -9,8 +10,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-
-import '../backdrop.dart';
 
 const Color blueTextColor = Color(0xff004861);
 
@@ -23,7 +22,6 @@ class DrinkDetailsScreen extends StatefulWidget {
   _DrinkDetailsScreenState createState() => _DrinkDetailsScreenState();
 }
 
-//todo include refresh for detail request
 class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
   @override
   void initState() {
@@ -100,14 +98,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
   Widget _buildTextWidget(String text) {
     return Padding(
         padding: EdgeInsets.only(left: 24, top: 12, right: 24, bottom: 12),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.white,
-            fontFamily: 'Poppins',
-          ),
-        ));
+        child: Text(text, style: whiteSmallTextStyle));
   }
 
   Widget _buildTagWidget(String text, IconData ic) {
@@ -134,7 +125,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                     )),
                 Expanded(
                     child: Text(
-                  text, //todo null safety
+                  text,
                   style: TextStyle(
                       color: Colors.white, fontFamily: 'Poppins', fontSize: 22),
                 )),
@@ -146,12 +137,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildSuccessWidgetPortrait(Drink drink) {
     return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [gradientStartColor, gradientEndColor],
-        )),
+        decoration: BoxDecoration(gradient: blueGradient),
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
@@ -189,12 +175,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildSuccessWidgetLandscape(Drink drink) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [gradientStartColor, gradientEndColor],
-      )),
+      decoration: BoxDecoration(gradient: blueGradient),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -243,12 +224,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildLoadingWidgetPortrait() {
     return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [gradientStartColor, gradientEndColor],
-        )),
+        decoration: BoxDecoration(gradient: blueGradient),
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
@@ -283,12 +259,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildLoadingWidgetLandscape() {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [gradientStartColor, gradientEndColor],
-      )),
+      decoration: BoxDecoration(gradient: blueGradient),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -339,12 +310,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildErrorWidgetPortrait() {
     return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [gradientStartColor, gradientEndColor],
-        )),
+        decoration: BoxDecoration(gradient: blueGradient),
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
@@ -393,12 +359,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildErrorWidgetLandscape() {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [gradientStartColor, gradientEndColor],
-      )),
+      decoration: BoxDecoration(gradient: blueGradient),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -1,3 +1,4 @@
+import 'package:bartender/constants.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
@@ -7,10 +8,10 @@ import 'package:meta/meta.dart';
 
 const _padding = EdgeInsets.all(16.0);
 const _labelColor = Color(0xff3333333);
-const _borderColor = Color(0x1500001F);
+const borderColor = Color(0x1500001F);
 const _hintColor = Color(0xff000000);
 const iconColor = Color(0xff004861);
-const _dropdownArrowColor = Color(0xff606262);
+const dropdownArrowColor = Color(0xff606262);
 const _filterLabelTextStyle = TextStyle(
     color: _labelColor,
     fontFamily: 'Poppins',
@@ -127,17 +128,15 @@ class _FiltersPanelState extends State<FiltersPanel> {
       height: 56,
       margin: EdgeInsets.only(top: 12.0),
       decoration: BoxDecoration(
-        // This sets the color of the [DropdownButton] itself
         color: Colors.transparent,
         border: Border.all(
-          color: _borderColor,
+          color: borderColor,
           width: 1.0,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Theme(
-        // This sets the color of the [DropdownMenuItem]
         data: Theme.of(context).copyWith(
           canvasColor: Colors.grey[50],
         ),
@@ -148,7 +147,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
               icon: Icon(
                 Icons.keyboard_arrow_down,
                 size: 18,
-                color: _dropdownArrowColor,
+                color: dropdownArrowColor,
               ),
               hint: Text(BartenderLocalizations.of(context).actionSelectOption,
                   style: _hintTextStyle),
@@ -316,8 +315,7 @@ class _FiltersPanelState extends State<FiltersPanel> {
         color: iconColor,
         child: PlatformText(
           BartenderLocalizations.of(context).actionResults,
-          style: TextStyle(
-              color: Colors.white, fontFamily: 'Poppins', fontSize: 12),
+          style: whiteExtraSmallTextStyle,
         ),
       ),
     );

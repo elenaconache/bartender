@@ -44,15 +44,17 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
   /// device is portrait or landscape.
   Widget _buildDrinksWidgets(Orientation deviceOrientation) {
     if (deviceOrientation == Orientation.portrait) {
-      return GridView.count(
-        crossAxisCount: 2,
-        children: _drinks.map((Drink d) {
-          return DrinkTile(
-            drink: d,
-            onTap: _onDrinkTap,
-          );
-        }).toList(),
-      );
+      return Container(
+          color: Colors.transparent,
+          child: GridView.count(
+            crossAxisCount: 2,
+            children: _drinks.map((Drink d) {
+              return DrinkTile(
+                drink: d,
+                onTap: _onDrinkTap,
+              );
+            }).toList(),
+          ));
     } else {
       return GridView.count(
         crossAxisCount: 4,
@@ -68,15 +70,13 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CubitConsumer<DrinksListCubit, DrinksListState>(
-        builder: (context, state) {
-          return _buildWidget(state);
-        },
-        listener: (context, state) {
-          return _buildWidget(state);
-        },
-      ),
+    return CubitConsumer<DrinksListCubit, DrinksListState>(
+      builder: (context, state) {
+        return _buildWidget(state);
+      },
+      listener: (context, state) {
+        return _buildWidget(state);
+      },
     );
   }
 
@@ -98,7 +98,8 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
     List<Drink> drinks = state.drinks;
     _drinks = drinks;
     assert(debugCheckHasMediaQuery(context));
-    final listView = Padding(
+    final listView = Container(
+      color: Colors.transparent,
       padding: EdgeInsets.only(
         left: 8.0,
         right: 8.0,
@@ -119,20 +120,8 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
       ),
       backPanel: listView,
       frontTitle: _buildFrontTitle(),
-      backTitle: _buildBackTitle(),
     );
     return _backdrop;
-  }
-
-  Widget _buildBackTitle() {
-    return Text(
-      BartenderLocalizations.of(context).drinksLabel,
-      style: TextStyle(
-          color: Colors.white,
-          fontFamily: 'Poppins',
-          fontStyle: FontStyle.normal,
-          fontSize: 20),
-    ); //),
   }
 
   Widget _buildFrontTitle() {
@@ -161,34 +150,34 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
       child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
     );
     _backdrop = Backdrop(
-        frontPanel: FiltersPanel(
-          ingredients: ingredients,
-          categories: categories,
-          ingredient: state.ingredient,
-          category: state.category,
-          onCategorySelected: _onCategorySelected,
-          onIngredientSelected: _onIngredientSelected,
-        ),
-        backPanel: listView,
-        frontTitle: _buildFrontTitle(),
-        backTitle: _buildBackTitle());
+      frontPanel: FiltersPanel(
+        ingredients: ingredients,
+        categories: categories,
+        ingredient: state.ingredient,
+        category: state.category,
+        onCategorySelected: _onCategorySelected,
+        onIngredientSelected: _onIngredientSelected,
+      ),
+      backPanel: listView,
+      frontTitle: _buildFrontTitle(),
+    );
     return _backdrop;
   }
 
   Widget _buildLoadingWidget() {
     if (_backdrop == null) {
       _backdrop = Backdrop(
-          frontPanel: FiltersPanel(
-            ingredients: ingredients,
-            categories: categories,
-            ingredient: null,
-            category: null,
-            onCategorySelected: _onCategorySelected,
-            onIngredientSelected: _onIngredientSelected,
-          ),
-          backPanel: Container(),
-          frontTitle: _buildFrontTitle(),
-          backTitle: _buildBackTitle());
+        frontPanel: FiltersPanel(
+          ingredients: ingredients,
+          categories: categories,
+          ingredient: null,
+          category: null,
+          onCategorySelected: _onCategorySelected,
+          onIngredientSelected: _onIngredientSelected,
+        ),
+        backPanel: Container(),
+        frontTitle: _buildFrontTitle(),
+      );
     }
 
     return Stack(
@@ -213,43 +202,43 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
 
   Widget _buildErrorBackdrop(String ingredient, String category) {
     _backdrop = Backdrop(
-        frontPanel: FiltersPanel(
-          ingredients: ingredients,
-          categories: categories,
-          ingredient: null,
-          category: null,
-          onCategorySelected: _onCategorySelected,
-          onIngredientSelected: _onIngredientSelected,
-        ),
-        backPanel: Container(
-            margin: EdgeInsets.only(top: 48),
-            child: RefreshIndicator(
-              onRefresh: () => _retryLastRequest(ingredient, category),
-              child: ListView(
-                children: [
-                  Image.asset(
-                    'assets/images/waterglass.png',
-                    fit: BoxFit.fitHeight,
-                    height: 160,
-                  ),
-                  Center(
-                      child: Padding(
-                    padding: EdgeInsets.only(top: 24, left: 24, right: 24),
-                    child: Text(
-                      BartenderLocalizations.of(context).connectionList,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
+      frontPanel: FiltersPanel(
+        ingredients: ingredients,
+        categories: categories,
+        ingredient: null,
+        category: null,
+        onCategorySelected: _onCategorySelected,
+        onIngredientSelected: _onIngredientSelected,
+      ),
+      backPanel: Container(
+          margin: EdgeInsets.only(top: 48),
+          child: RefreshIndicator(
+            onRefresh: () => _retryLastRequest(ingredient, category),
+            child: ListView(
+              children: [
+                Image.asset(
+                  'assets/images/waterglass.png',
+                  fit: BoxFit.fitHeight,
+                  height: 160,
+                ),
+                Center(
+                    child: Padding(
+                  padding: EdgeInsets.only(top: 24, left: 24, right: 24),
+                  child: Text(
+                    BartenderLocalizations.of(context).connectionList,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                      fontSize: 20,
                     ),
-                  ))
-                ],
-              ),
-            )),
-        frontTitle: _buildFrontTitle(),
-        backTitle: _buildBackTitle());
+                  ),
+                ))
+              ],
+            ),
+          )),
+      frontTitle: _buildFrontTitle(),
+    );
     return _backdrop;
   }
 

@@ -1,5 +1,5 @@
 import 'package:bartender/blocs/login/login_cubit.dart';
-import 'package:bartender/ui/login/login_screen.dart';
+import 'package:bartender/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

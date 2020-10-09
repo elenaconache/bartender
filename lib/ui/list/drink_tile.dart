@@ -21,6 +21,7 @@ class DrinkTile extends StatelessWidget {
           onTap(drink);
         },
         child: Container(
+          color: Colors.transparent,
           margin: const EdgeInsets.all(4.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12.0),

@@ -1,10 +1,10 @@
-import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/login/login_states.dart';
+import 'package:bartender/blocs/logout/logout_cubit.dart';
+import 'package:bartender/constants.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
-import 'package:bartender/ui/backdrop.dart';
-import 'package:bartender/ui/list/drinks_list_screen.dart';
+import 'package:bartender/ui/drawer/drawer_screen.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
@@ -21,8 +21,6 @@ class LoginScreenState extends State<LoginScreen> {
     loginCubit.signIn();
   }
 
-  //Future<void> _handleSignOut() => _googleSignIn.disconnect();//todo use for sign out button
-
   Widget _buildBody(LoginState state) {
     if (state is LoginEmpty) {
       if (MediaQuery.of(context).orientation == Orientation.portrait) {
@@ -33,12 +31,7 @@ class LoginScreenState extends State<LoginScreen> {
     } else {
       //login success/ already logged in/ initial
       return Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [gradientStartColor, gradientEndColor],
-          )),
+          decoration: BoxDecoration(gradient: blueGradient),
           child: Center(
             child: CircularProgressIndicator(),
           ));
@@ -56,9 +49,9 @@ class LoginScreenState extends State<LoginScreen> {
           if (state is AlreadyLoggedIn || state is LoginSuccess) {
             Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (context) {
-              return CubitProvider<DrinksListCubit>(
-                create: (context) => getIt.get<DrinksListCubit>(),
-                child: DrinksListScreen(),
+              return CubitProvider<LogoutCubit>(
+                create: (context) => getIt.get<LogoutCubit>(),
+                child: DrawerScreen(),
               );
             }), (Route<dynamic> route) => false);
           } else {
@@ -171,8 +164,7 @@ class LoginScreenState extends State<LoginScreen> {
             color: iconColor,
             child: PlatformText(
               BartenderLocalizations.of(context).actionGoogle,
-              style: TextStyle(
-                  color: Colors.white, fontFamily: 'Poppins', fontSize: 16),
+              style: whiteSmallTextStyle,
             ),
           ),
         ));
@@ -181,12 +173,7 @@ class LoginScreenState extends State<LoginScreen> {
   Widget _buildPortraitBody() {
     return Container(
         padding: EdgeInsets.only(top: 24, bottom: 24),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [gradientStartColor, gradientEndColor],
-        )),
+        decoration: BoxDecoration(gradient: blueGradient),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
@@ -213,12 +200,7 @@ class LoginScreenState extends State<LoginScreen> {
   Widget _buildLandscapeBody() {
     return Container(
         padding: EdgeInsets.all(48),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [gradientStartColor, gradientEndColor],
-        )),
+        decoration: BoxDecoration(gradient: blueGradient),
         child: Row(
           children: [
             Expanded(

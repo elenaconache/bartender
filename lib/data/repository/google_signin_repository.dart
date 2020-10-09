@@ -1,42 +1,36 @@
 import 'dart:async';
 
+import 'package:bartender/dependency_injection.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleSignInRepository {
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: <String>[
-      'email',
-    ],
-  );
-
   GoogleSignInRepository();
 
   void checkAlreadySignedIn({Function onAccount, Function onError}) {
-    _googleSignIn.onCurrentUserChanged
+    getIt
+        .get<GoogleSignIn>()
+        .onCurrentUserChanged
         .listen((GoogleSignInAccount account) async {
       if (account != null) {
         onAccount(account);
       }
     });
-    _googleSignIn
+    getIt
+        .get<GoogleSignIn>()
         .signInSilently()
         .then((value) => onAccount(value))
         .catchError(onError);
   }
 
-  GoogleSignInAccount getLastLoggedInAccount() {
-    return _googleSignIn.currentUser;
-  }
-
   Future<void> signIn() async {
     try {
-      await _googleSignIn.signIn();
+      await getIt.get<GoogleSignIn>().signIn();
     } catch (error) {
       print(error);
     }
   }
 
   Future<void> signOut() async {
-    _googleSignIn.disconnect();
+    getIt.get<GoogleSignIn>().disconnect();
   }
 }

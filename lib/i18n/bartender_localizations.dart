@@ -31,6 +31,13 @@ class BartenderLocalizations {
       'bartender_offer':
           'The Bartender will offer you creative drinks ideas. Are you ready to be impressed?',
       'action_google': 'Join with Google',
+      'profile_label': 'Profile',
+      'stats_label': 'Stats',
+      'favorites_label': 'Favorites',
+      'logout_label': 'Logout',
+      'logout_message': 'Are you sure you want to sign out?',
+      'yes': 'Yes',
+      'no': 'No',
     },
     'ro': {
       'filters_unavailable': 'Momentan, filtrele nu sunt disponibile.',
@@ -52,6 +59,13 @@ class BartenderLocalizations {
       'bartender_offer':
           'Bartender iti va oferi idei creative de bauturi. Esti pregatit sa fii impresionat?',
       'action_google': 'Continua cu Google',
+      'profile_label': 'Profil',
+      'stats_label': 'Statistici',
+      'favorites_label': 'Favorite',
+      'logout_label': 'Deconectare',
+      'logout_message': 'Esti sigur ca vrei sa te deconectezi?',
+      'yes': 'Da',
+      'no': 'Nu',
     },
   };
 
@@ -118,4 +132,33 @@ class BartenderLocalizations {
   String get actionGoogle {
     return _localizedValues[locale.languageCode]['action_google'];
   }
+
+  String get profileLabel {
+    return _localizedValues[locale.languageCode]['profile_label'];
+  }
+
+  String get statsLabel {
+    return _localizedValues[locale.languageCode]['stats_label'];
+  }
+
+  String get favoritesLabel {
+    return _localizedValues[locale.languageCode]['favorites_label'];
+  }
+
+  String get logoutLabel {
+    return _localizedValues[locale.languageCode]['logout_label'];
+  }
+
+  String get logoutMessage {
+    return _localizedValues[locale.languageCode]['logout_message'];
+  }
+
+  String get yes {
+    return _localizedValues[locale.languageCode]['yes'];
+  }
+
+  String get no {
+    return _localizedValues[locale.languageCode]['no'];
+  }
+
 }
