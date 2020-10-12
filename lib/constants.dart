@@ -17,3 +17,5 @@ const whiteExtraSmallTextStyle = TextStyle(
   color: Colors.white,
   fontFamily: 'Poppins',
 );
+const whiteMediumTextStyle =
+    TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 22);

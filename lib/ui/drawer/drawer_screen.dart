@@ -9,13 +9,13 @@ import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
 import 'package:bartender/ui/backdrop.dart';
 import 'package:bartender/ui/drawer/drawer_item.dart';
-import 'file:///D:/flutter_apps/bartender/lib/ui/favorites_screen.dart';
+import 'package:bartender/ui/favorites_screen.dart';
 import 'package:bartender/ui/list/drinks_list_screen.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:bartender/ui/login_screen.dart';
+import 'package:bartender/ui/profile_screen.dart';
+import 'package:bartender/ui/stats_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'file:///D:/flutter_apps/bartender/lib/ui/profile_screen.dart';
-import 'file:///D:/flutter_apps/bartender/lib/ui/stats_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -122,7 +122,9 @@ class _DrawerScreenState extends State<DrawerScreen>
         builder: (context) => AppBar(
           centerTitle: true,
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: _drawerSelectionIndex == 0
+              ? gradientStartColor
+              : Colors.transparent,
           leading: IconButton(
             onPressed: () => {Scaffold.of(context).openDrawer()},
             iconSize: 30,

@@ -123,12 +123,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                       color: Colors.white,
                       size: 48.0,
                     )),
-                Expanded(
-                    child: Text(
-                  text,
-                  style: TextStyle(
-                      color: Colors.white, fontFamily: 'Poppins', fontSize: 22),
-                )),
+                Expanded(child: Text(text, style: whiteMediumTextStyle)),
               ]),
             ),
           ),
