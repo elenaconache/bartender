@@ -5,7 +5,6 @@ import 'package:bartender/constants.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
 import 'package:bartender/ui/drawer/drawer_screen.dart';
-import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -73,7 +72,6 @@ class LoginScreenState extends State<LoginScreen> {
   Widget _buildWelcomeTextsPortrait() {
     return Container(
         margin: EdgeInsets.all(24),
-        height: 400,
         width: double.infinity,
         child: Row(
           children: [
@@ -157,14 +155,18 @@ class LoginScreenState extends State<LoginScreen> {
           margin: EdgeInsets.only(top: 24, bottom: 24, left: 8, right: 8),
           child: RaisedButton(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: BorderSide(color: Colors.white, width: 2)),
+                borderRadius: BorderRadius.circular(40.0),
+                side: BorderSide(color: Colors.red, width: 2)),
             padding: EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 16),
             onPressed: () => {_handleSignIn()},
-            color: iconColor,
+            color: Colors.white,
             child: PlatformText(
               BartenderLocalizations.of(context).actionGoogle,
-              style: whiteSmallTextStyle,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.red,
+                fontFamily: 'Poppins',
+              ),
             ),
           ),
         ));
@@ -172,27 +174,58 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildPortraitBody() {
     return Container(
-        padding: EdgeInsets.only(top: 24, bottom: 24),
-        decoration: BoxDecoration(gradient: blueGradient),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Expanded(
-                flex: 5,
+        height: double.infinity,
+        width: double.infinity,
+        child: Stack(
+          children: [
+            Container(
+                height: MediaQuery.of(context).size.height * 0.8,
                 child: Stack(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 120),
-                      child: _buildWelcomeImage(),
+                    Image.asset(
+                      'assets/images/drink.jpg',
+                      fit: BoxFit.cover,
                     ),
                     _buildWelcomeTextsPortrait(),
                   ],
                 )),
-            Expanded(
-                flex: 1,
+            Align(
+                alignment: Alignment.bottomCenter,
                 child: Padding(
-                    padding: EdgeInsets.only(left: 24, right: 24),
-                    child: _buildSignInButton()))
+                    padding: EdgeInsets.all(24),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      child: Material(
+                        elevation: 2.0,
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20.0),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.only(top: 24),
+                                child: Icon(
+                                  Icons.account_circle_sharp,
+                                  size: 64,
+                                )),
+                            Text(
+                              BartenderLocalizations.of(context).titleWelcome,
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  color: Colors.black,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Padding(
+                                padding: EdgeInsets.only(left: 24, right: 24),
+                                child: _buildSignInButton())
+                          ],
+                        ),
+                      ),
+                    )))
           ],
         ));
   }

@@ -38,6 +38,7 @@ class BartenderLocalizations {
       'logout_message': 'Are you sure you want to sign out?',
       'yes': 'Yes',
       'no': 'No',
+      'title_welcome': 'Welcome to us'
     },
     'ro': {
       'filters_unavailable': 'Momentan, filtrele nu sunt disponibile.',
@@ -66,8 +67,13 @@ class BartenderLocalizations {
       'logout_message': 'Esti sigur ca vrei sa te deconectezi?',
       'yes': 'Da',
       'no': 'Nu',
+      'title_welcome': 'Bine ai venit'
     },
   };
+
+  String get titleWelcome {
+    return _localizedValues[locale.languageCode]['title_welcome'];
+  }
 
   String get filtersUnavailable {
     return _localizedValues[locale.languageCode]['filters_unavailable'];
@@ -160,5 +166,4 @@ class BartenderLocalizations {
   String get no {
     return _localizedValues[locale.languageCode]['no'];
   }
-
 }
