@@ -38,7 +38,8 @@ class BartenderLocalizations {
       'logout_message': 'Are you sure you want to sign out?',
       'yes': 'Yes',
       'no': 'No',
-      'title_welcome': 'Welcome to us'
+      'title_welcome': 'Welcome',
+      'app_name_bartender': 'Bartender'
     },
     'ro': {
       'filters_unavailable': 'Momentan, filtrele nu sunt disponibile.',
@@ -67,9 +68,14 @@ class BartenderLocalizations {
       'logout_message': 'Esti sigur ca vrei sa te deconectezi?',
       'yes': 'Da',
       'no': 'Nu',
-      'title_welcome': 'Bine ai venit'
+      'title_welcome': 'Bine ai venit',
+      'app_name_bartender': 'Bartender'
     },
   };
+
+  String get bartenderAppName {
+    return _localizedValues[locale.languageCode]['app_name_bartender'];
+  }
 
   String get titleWelcome {
     return _localizedValues[locale.languageCode]['title_welcome'];
