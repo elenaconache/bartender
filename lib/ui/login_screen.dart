@@ -24,11 +24,37 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildBody(LoginState state) {
     if (state is LoginEmpty) {
-      if (MediaQuery.of(context).orientation == Orientation.portrait) {
-        return _buildPortraitBody();
-      } else {
-        return _buildLandscapeBody();
-      }
+      return Container(
+          height: double.infinity,
+          width: double.infinity,
+          color: blueTextColor,
+          child: Stack(
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        'assets/images/coffee.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: _buildWelcomeTextsPortrait(),
+                      )
+                    ],
+                  )),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                      padding: EdgeInsets.all(24),
+                      child: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? _buildPortraitLoginForm()
+                          : _buildLandscapeLoginForm()))
+            ],
+          ));
     } else {
       //login success/ already logged in/ initial
       return Container(
@@ -63,14 +89,6 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildWelcomeImage() {
-    return Center(
-        child: Image.asset(
-      'assets/images/wine.png',
-      fit: BoxFit.contain,
-    ));
-  }
-
   Widget _buildWelcomeTextsPortrait() {
     return Container(
         margin: EdgeInsets.all(12),
@@ -85,46 +103,6 @@ class LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ));
-  }
-
-  Widget _buildWelcomeTextsLandscape() {
-    return Row(
-      children: [
-        Expanded(
-            flex: 1,
-            child: Container(
-                height: double.infinity,
-                child: RotatedBox(
-                  quarterTurns: 1,
-                  child: Text(
-                    BartenderLocalizations.of(context).actionLogin,
-                    style: TextStyle(
-                        fontSize: 48,
-                        color: Colors.white,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500),
-                  ),
-                ))),
-        Expanded(
-            flex: 3,
-            child: Stack(
-              children: [
-                Text(
-                  BartenderLocalizations.of(context).bartenderOffer,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _buildSignInButton(),
-                )
-              ],
-            ))
-      ],
-    );
   }
 
   Widget _buildSignInButton() {
@@ -147,94 +125,92 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildPortraitBody() {
+  Widget _buildLandscapeLoginForm() {
     return Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: blueTextColor,
-        child: Stack(
-          children: [
-            Container(
-                height: MediaQuery.of(context).size.height * 0.75,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(
-                      'assets/images/coffee.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: _buildWelcomeTextsPortrait(),
-                    )
-                  ],
+      margin: EdgeInsets.only(left: 80, right: 80),
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: Material(
+        elevation: 2.0,
+        color: Colors.white,
+        borderRadius: BorderRadius.all(
+          Radius.circular(20.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(top: 12),
+                child: Icon(
+                  Icons.account_circle_sharp,
+                  size: 64,
                 )),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.45,
-                      child: Material(
-                        elevation: 2.0,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20.0),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(top: 24),
-                                child: Icon(
-                                  Icons.account_circle_sharp,
-                                  size: 64,
-                                )),
-                            Text(
-                              BartenderLocalizations.of(context).titleWelcome,
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              'Please sign in to continue',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontFamily: 'Poppins',
-                              ),
-                            ),
-                            Spacer(),
-                            Padding(
-                                padding: EdgeInsets.only(left: 24, right: 24),
-                                child: _buildSignInButton())
-                          ],
-                        ),
-                      ),
-                    )))
+            Text(
+              BartenderLocalizations.of(context).titleWelcome,
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500),
+            ),
+            Text(
+              'Please sign in to continue',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            Spacer(),
+            Padding(
+                padding: EdgeInsets.only(left: 24, right: 24),
+                child: _buildSignInButton())
           ],
-        ));
+        ),
+      ),
+    );
   }
 
-  Widget _buildLandscapeBody() {
+  Widget _buildPortraitLoginForm() {
     return Container(
-        padding: EdgeInsets.all(48),
-        decoration: BoxDecoration(gradient: blueGradient),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: _buildWelcomeImage(),
+      height: MediaQuery.of(context).size.height * 0.45,
+      child: Material(
+        elevation: 2.0,
+        color: Colors.white,
+        borderRadius: BorderRadius.all(
+          Radius.circular(20.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(top: 24),
+                child: Icon(
+                  Icons.account_circle_sharp,
+                  size: 64,
+                )),
+            Text(
+              BartenderLocalizations.of(context).titleWelcome,
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500),
             ),
-            Expanded(
-                flex: 3,
-                child: Container(
-                  margin: EdgeInsets.only(top: 24, bottom: 24),
-                  child: _buildWelcomeTextsLandscape(),
-                ))
+            Text(
+              'Please sign in to continue',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            Spacer(),
+            Padding(
+                padding: EdgeInsets.only(left: 24, right: 24),
+                child: _buildSignInButton())
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
