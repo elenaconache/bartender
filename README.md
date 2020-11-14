@@ -3,10 +3,12 @@
 Flutter application for browsing drinks & cocktails.
 
 
-![alt text](https://imgur.com/Wak5aCV)  ![alt text](https://imgur.com/xAqhUv8)   ![alt text](https://imgur.com/xIfayRQ)  ![alt text](https://imgur.com/Mxu4XTK) 
+<img src="https://i.imgur.com/Wak5aCV.png" width="300"/>  <img src="https://i.imgur.com/xAqhUv8.png" width="300"/>  <img src="https://i.imgur.com/xIfayRQ.png" width="300"/>  <img src="https://i.imgur.com/Mxu4XTK.png" width="300"/>
 
 
-![alt text](https://imgur.com/GO4iB9q)  ![alt text](https://imgur.com/IDuxtyP)
+<img src="https://i.imgur.com/GO4iB9q.png" width="400"/>  <img src="https://i.imgur.com/IDuxtyP.png" width="400"/>
+
+
 
 ## Flutter learning resources
 
