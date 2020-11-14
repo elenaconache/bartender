@@ -12,7 +12,7 @@ Flutter application for browsing drinks & cocktails.
 <img src="https://i.imgur.com/ReBhAoU.png" width="400"/>  <img src="https://i.imgur.com/1rVeRAC.png" width="400"/>
 
 
-<img src="https://i.imgur.com/GO4iB9q.png" width="600"/>  <img src="https://i.imgur.com/IDuxtyP.png" width="600"/>
+<img src="https://i.imgur.com/GO4iB9q.png" width="500"/>  <img src="https://i.imgur.com/IDuxtyP.png" width="500"/>
 
 
 ## Features
