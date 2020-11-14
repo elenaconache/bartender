@@ -1,6 +1,7 @@
 import 'package:bartender/data/repository/google_signin_repository.dart';
 import 'package:cubit/cubit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 
 import 'login_states.dart';
@@ -49,7 +50,8 @@ class LoginCubit extends CubitStream<LoginState> {
   void signIn() async {
     try {
       emit(LoginLoading());
-      repository.signIn();
+      GoogleSignInAccount account = await repository.signIn();
+      account == null ? emit(LoginEmpty()) : emit(LoginSuccess(account));
     } catch (e) {
       emit(LoginError());
     }

@@ -22,11 +22,18 @@ class GoogleSignInRepository {
         .catchError(onError);
   }
 
-  Future<void> signIn() async {
+  Future<GoogleSignInAccount> signIn() async {
     try {
       await getIt.get<GoogleSignIn>().signIn();
+      GoogleSignInAccount account = getIt.get<GoogleSignIn>().currentUser;
+      if (account == null) {
+        return null;
+      } else {
+        return account;
+      }
     } catch (error) {
       print(error);
+      return null;
     }
   }
 
