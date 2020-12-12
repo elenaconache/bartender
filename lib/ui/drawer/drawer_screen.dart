@@ -86,7 +86,7 @@ class _DrawerScreenState extends State<DrawerScreen>
   Widget build(BuildContext context) {
     return CubitConsumer<LogoutCubit, LogoutState>(
       builder: (context, state) {
-        return _buildDrawerScreen(state);
+        return _buildDrawerScreen(context, state);
       },
       listener: (context, state) {
         if (state is LogoutFinished) {
@@ -98,7 +98,7 @@ class _DrawerScreenState extends State<DrawerScreen>
             );
           }), (Route<dynamic> route) => false);
         } else {
-          return _buildDrawerScreen(state);
+          return _buildDrawerScreen(context, state);
         }
       },
     );
@@ -204,11 +204,15 @@ class _DrawerScreenState extends State<DrawerScreen>
             ));
   }
 
-  Widget _buildDrawerScreen(LogoutState state) {
+  Widget _buildDrawerScreen(BuildContext context, LogoutState state) {
     if (state is LogoutLoading) {
       return _buildDrawerScreenLoading();
     } else {
-      return _buildDrawerScreenInitial();
+      if (MediaQuery.of(context).orientation == Orientation.landscape) {
+        return _buildDrawerScreenInitialLandscape();
+      } else {
+        return _buildDrawerScreenInitial();
+      }
     }
   }
 
@@ -254,9 +258,86 @@ class _DrawerScreenState extends State<DrawerScreen>
         ));
   }
 
+  Widget _buildDrawerScreenInitialLandscape() {
+    var drawerOptions = <Widget>[];
+    for (var i = 0; i < _drawerItems.length; i++) {
+      var d = _drawerItems[i];
+      drawerOptions.add(
+        _buildDrawerOptionTileLandscape(d, i),
+      );
+    }
+    return Container(
+        decoration: BoxDecoration(gradient: blueGradient),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: _buildAppBar(),
+          drawer: ClipRRect(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                bottomRight: Radius.circular(20)),
+            child: Drawer(
+              child: new Column(
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.all(24.0),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: blueGradient,
+                      ),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                getIt
+                                    .get<GoogleSignIn>()
+                                    .currentUser
+                                    .displayName,
+                                style: whiteSmallTextStyle)),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              getIt.get<GoogleSignIn>().currentUser.email,
+                              style: whiteExtraSmallTextStyle,
+                            )),
+                      ])),
+                  Column(
+                    children: drawerOptions,
+                  )
+                ],
+              ),
+            ),
+          ),
+          body: _getDrawerItemWidget(_drawerSelectionIndex),
+        ));
+  }
+
   Widget _buildDrawerOptionTile(DrawerItem d, int index) {
     return Container(
       child: ListTile(
+        leading: new Icon(
+          d.icon,
+          color: _drawerSelectionIndex == index
+              ? gradientStartColor
+              : dropdownArrowColor,
+        ),
+        title: Text(
+          d.title,
+          style: TextStyle(
+              color: _drawerSelectionIndex == index
+                  ? gradientStartColor
+                  : dropdownArrowColor),
+        ),
+        selected: index == _drawerSelectionIndex,
+        onTap: () => _onSelectItem(context, index),
+      ),
+    );
+  }
+
+  Widget _buildDrawerOptionTileLandscape(DrawerItem d, int index) {
+    return Container(
+      padding: EdgeInsets.only(left: 24, right: 24),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(0),
         leading: new Icon(
           d.icon,
           color: _drawerSelectionIndex == index
