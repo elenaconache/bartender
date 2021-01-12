@@ -12,6 +12,11 @@ const whiteSmallTextStyle = TextStyle(
   color: Colors.white,
   fontFamily: 'Poppins',
 );
+const gradientColorTextStyle = TextStyle(
+  fontSize: 16,
+  color: gradientStartColor,
+  fontFamily: 'Poppins',
+);
 const whiteExtraSmallTextStyle = TextStyle(
   fontSize: 12,
   color: Colors.white,

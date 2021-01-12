@@ -23,7 +23,11 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return _buildProfilePortraitWidget();
+    if (MediaQuery.of(context).orientation == Orientation.portrait) {
+      return _buildProfilePortraitWidget();
+    } else {
+      return _buildProfileLandscapeWidget();
+    }
   }
 
   List<Widget> _buildCarouselItems() {
@@ -85,6 +89,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildLandscapeCarousel() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: CarouselSlider(
+        options: CarouselOptions(
+            height: 260,
+            autoPlay: true,
+            enlargeCenterPage: true,
+            enableInfiniteScroll: true,
+            autoPlayInterval: Duration(seconds: 3),
+            autoPlayAnimationDuration: Duration(milliseconds: 500),
+            scrollDirection: Axis.vertical),
+        items: _buildCarouselItems(),
+      ),
+    );
+  }
+
   Widget _buildAvatarWidget() {
     return CircularProfileAvatar('',
         radius: 90,
@@ -127,7 +149,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
   }
 
-  Widget _buildProfileInfoWidget() {
+  Widget _buildAvatarWidgetLandscape() {
+    return CircularProfileAvatar('',
+        radius: 90,
+        backgroundColor: Colors.blueGrey,
+        borderWidth: 1,
+        borderColor: gradientStartColor,
+        elevation: 5.0,
+        cacheImage: true,
+        child: CachedNetworkImage(
+          imageUrl: 'https://a', //todo replace with actual data
+          placeholder: (context, url) => CircularProfileAvatar(
+            '',
+            radius: 90,
+            backgroundColor: Colors.blueGrey,
+            borderWidth: 1,
+            initialsText: Text(
+              "EC", //todo replace with actual data
+              style: TextStyle(
+                  fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
+            ),
+            borderColor: gradientStartColor,
+            elevation: 8.0,
+            showInitialTextAbovePicture: true,
+          ),
+          errorWidget: (context, url, error) => CircularProfileAvatar(
+            '',
+            radius: 90,
+            backgroundColor: Colors.blueGrey,
+            borderWidth: 1,
+            initialsText: Text(
+              "EC", //todo replace with actual data
+              style: TextStyle(
+                  fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
+            ),
+            borderColor: gradientStartColor,
+            elevation: 8.0,
+            showInitialTextAbovePicture: true,
+          ),
+          fit: BoxFit.fitWidth,
+        ));
+  }
+
+  Widget _buildProfileInfoWidget(Orientation orientation) {
     return Column(
       children: [
         Padding(
@@ -135,14 +199,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Center(
             child: Text(
               'Elena Cristea', //todo replace with actual data
-              style: whiteSmallTextStyle,
+              style: orientation == Orientation.portrait
+                  ? whiteSmallTextStyle
+                  : gradientColorTextStyle,
             ),
           ),
         ),
         Center(
           child: Text(
             'elena96crst@gmail.com', //todo replace with actual data
-            style: whiteExtraSmallTextStyle,
+            style: orientation == Orientation.portrait
+                ? whiteSmallTextStyle
+                : gradientColorTextStyle,
           ),
         ),
       ],
@@ -178,7 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Colors.white,
                 onPressed: () => {},
               ),
-              _buildProfileInfoWidget(),
+              _buildProfileInfoWidget(Orientation.portrait),
               FloatingActionButton(
                 child: Icon(
                   Icons.camera_alt,
@@ -191,5 +259,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ]));
+  }
+
+  Widget _buildTopSectionLandscape() {
+    return Container(
+        margin: EdgeInsets.only(
+          top: 24,
+        ),
+        height: MediaQuery.of(context).size.height * 0.4,
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: Center(
+                  child: Wrap(children: [
+                _buildAvatarWidgetLandscape(),
+              ]))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FloatingActionButton(
+                child: Icon(
+                  Icons.nights_stay,
+                  size: 24,
+                  color: Colors.white,
+                ),
+                backgroundColor: gradientStartColor,
+                onPressed: () => {},
+              ),
+              _buildProfileInfoWidget(Orientation.landscape),
+              FloatingActionButton(
+                child: Icon(
+                  Icons.camera_alt,
+                  size: 24,
+                  color: Colors.white,
+                ),
+                backgroundColor: gradientStartColor,
+                onPressed: () => {},
+              )
+            ],
+          ),
+        ]));
+  }
+
+  Widget _buildProfileLandscapeWidget() {
+    return Container(
+      color: Colors.white,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _buildTopSectionLandscape(),
+            flex: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: _buildLandscapeCarousel(),
+          ),
+        ],
+      ),
+    );
   }
 }
