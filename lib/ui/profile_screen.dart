@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bartender/constants.dart';
 import 'package:bartender/ui/backdrop.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 final List<String> testImgList = [
   'https://cdn.pixabay.com/photo/2020/06/17/18/03/lights-5310589__340.jpg',
@@ -21,6 +24,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  File _image;
+
   @override
   Widget build(BuildContext context) {
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
@@ -115,41 +120,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderColor: Colors.white,
         elevation: 5.0,
         cacheImage: true,
-        child: CachedNetworkImage(
-          imageUrl: 'https://a', //todo replace with actual data
-          placeholder: (context, url) => CircularProfileAvatar(
-            '',
-            radius: 90,
-            backgroundColor: Colors.blueGrey,
-            borderWidth: 1,
-            initialsText: Text(
-              "EC", //todo replace with actual data
-              style: TextStyle(
-                  fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-            ),
-            borderColor: Colors.white,
-            elevation: 8.0,
-            showInitialTextAbovePicture: true,
-          ),
-          errorWidget: (context, url, error) => CircularProfileAvatar(
-            '',
-            radius: 90,
-            backgroundColor: Colors.blueGrey,
-            borderWidth: 1,
-            initialsText: Text(
-              "EC", //todo replace with actual data
-              style: TextStyle(
-                  fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-            ),
-            borderColor: Colors.white,
-            elevation: 8.0,
-            showInitialTextAbovePicture: true,
-          ),
-          fit: BoxFit.fitWidth,
-        ));
+        child: _image != null
+            ? Container(
+                width: 180,
+                height: 180,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: FileImage(File(_image.path)),
+                      fit: BoxFit.fitWidth),
+                  borderRadius: BorderRadius.circular(90),
+                ),
+              )
+            : _buildInitialsAvatar());
+  }
+
+  CachedNetworkImage _buildInitialsAvatar() {
+    return CachedNetworkImage(
+      imageUrl: 'https://a', //todo replace with actual data
+      placeholder: (context, url) => CircularProfileAvatar(
+        '',
+        radius: 90,
+        backgroundColor: Colors.blueGrey,
+        borderWidth: 1,
+        initialsText: Text(
+          "EC", //todo replace with actual data
+          style: TextStyle(
+              fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
+        ),
+        borderColor: Colors.white,
+        elevation: 8.0,
+        showInitialTextAbovePicture: true,
+      ),
+      errorWidget: (context, url, error) => CircularProfileAvatar(
+        '',
+        radius: 90,
+        backgroundColor: Colors.blueGrey,
+        borderWidth: 1,
+        initialsText: Text(
+          "EC", //todo replace with actual data
+          style: TextStyle(
+              fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
+        ),
+        borderColor: Colors.white,
+        elevation: 8.0,
+        showInitialTextAbovePicture: true,
+      ),
+      fit: BoxFit.fitWidth,
+    );
   }
 
   Widget _buildAvatarWidgetLandscape() {
+    print("building avatar with ${_image.path}");
     return CircularProfileAvatar('',
         radius: 90,
         backgroundColor: Colors.blueGrey,
@@ -157,38 +178,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderColor: gradientStartColor,
         elevation: 5.0,
         cacheImage: true,
-        child: CachedNetworkImage(
-          imageUrl: 'https://a', //todo replace with actual data
-          placeholder: (context, url) => CircularProfileAvatar(
-            '',
-            radius: 90,
-            backgroundColor: Colors.blueGrey,
-            borderWidth: 1,
-            initialsText: Text(
-              "EC", //todo replace with actual data
-              style: TextStyle(
-                  fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-            ),
-            borderColor: gradientStartColor,
-            elevation: 8.0,
-            showInitialTextAbovePicture: true,
-          ),
-          errorWidget: (context, url, error) => CircularProfileAvatar(
-            '',
-            radius: 90,
-            backgroundColor: Colors.blueGrey,
-            borderWidth: 1,
-            initialsText: Text(
-              "EC", //todo replace with actual data
-              style: TextStyle(
-                  fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-            ),
-            borderColor: gradientStartColor,
-            elevation: 8.0,
-            showInitialTextAbovePicture: true,
-          ),
-          fit: BoxFit.fitWidth,
-        ));
+        child: _image != null
+            ? Container(
+                width: 180,
+                height: 180,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: FileImage(File(_image.path)),
+                      fit: BoxFit.fitWidth),
+                  borderRadius: BorderRadius.circular(90),
+                ),
+              )
+            : _buildInitialsAvatar());
   }
 
   Widget _buildProfileInfoWidget(Orientation orientation) {
@@ -254,7 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: gradientStartColor,
                 ),
                 backgroundColor: Colors.white,
-                onPressed: () => {},
+                onPressed: () => {_showPicker(context)},
               )
             ],
           ),
@@ -295,7 +296,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Colors.white,
                 ),
                 backgroundColor: gradientStartColor,
-                onPressed: () => {},
+                onPressed: () => {_showPicker(context)},
               )
             ],
           ),
@@ -320,5 +321,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  void _imgFromCamera() async {
+    PickedFile image = await ImagePicker()
+        .getImage(source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      _image = File(image.path);
+    });
+  }
+
+  void _imgFromGallery() async {
+    PickedFile image = await ImagePicker()
+        .getImage(source: ImageSource.gallery, imageQuality: 50);
+
+    setState(() {
+      _image = File(image.path);
+    });
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Gallery'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
