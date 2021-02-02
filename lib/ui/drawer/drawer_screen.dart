@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/login/login_cubit.dart';
-import 'package:bartender/blocs/logout/logout_cubit.dart';
-import 'package:bartender/blocs/logout/logout_state.dart';
+import 'package:bartender/blocs/logout/drawer_cubit.dart';
+import 'package:bartender/blocs/logout/drawer_state.dart';
+import 'package:bartender/blocs/profile/profile_cubit.dart';
 import 'package:bartender/constants.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
@@ -15,6 +16,7 @@ import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:bartender/ui/login_screen.dart';
 import 'package:bartender/ui/profile_screen.dart';
 import 'package:bartender/ui/stats_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
@@ -22,7 +24,8 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class DrawerScreen extends StatefulWidget {
-  DrawerScreen();
+  final User currentUser;
+  DrawerScreen(this.currentUser);
 
   @override
   _DrawerScreenState createState() => _DrawerScreenState();
@@ -36,6 +39,7 @@ class _DrawerScreenState extends State<DrawerScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    print("didchangedependencies drawer screen");
     _drawerItems = [
       DrawerItem(BartenderLocalizations.of(context).profileLabel,
           Icons.account_circle),
@@ -53,7 +57,10 @@ class _DrawerScreenState extends State<DrawerScreen>
   Widget _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return ProfileScreen();
+        return CubitProvider<ProfileCubit>(
+          create: (context) => getIt.get<ProfileCubit>(),
+          child: ProfileScreen(),
+        );
       case 1:
         return CubitProvider<DrinksListCubit>(
           create: (context) => getIt.get<DrinksListCubit>(),
@@ -64,10 +71,14 @@ class _DrawerScreenState extends State<DrawerScreen>
       case 3:
         return FavoritesScreen();
     }
-    return null;
+    return CubitProvider<DrinksListCubit>(
+      create: (context) => getIt.get<DrinksListCubit>(),
+      child: DrinksListScreen(),
+    );
   }
 
   _onSelectItem(BuildContext context, int index) {
+    print("selected drawer item with index $index");
     if (index == 4) {
       Navigator.of(context).pop();
       if (Platform.isAndroid) {
@@ -79,12 +90,12 @@ class _DrawerScreenState extends State<DrawerScreen>
       setState(() => _drawerSelectionIndex = index);
       Navigator.of(context).pop();
     }
-    // close the drawer
   }
 
   @override
   Widget build(BuildContext context) {
-    return CubitConsumer<LogoutCubit, LogoutState>(
+    print("build drawer screen");
+    return CubitConsumer<LogoutCubit, DrawerScreenState>(
       builder: (context, state) {
         return _buildDrawerScreen(context, state);
       },
@@ -97,7 +108,10 @@ class _DrawerScreenState extends State<DrawerScreen>
               child: LoginScreen(),
             );
           }), (Route<dynamic> route) => false);
-        } else {
+        } /*else if(state is AccountLoaded){
+         // _account = state.account;
+          return _buildDrawerScreen(context, state);
+        }*/else {
           return _buildDrawerScreen(context, state);
         }
       },
@@ -204,8 +218,9 @@ class _DrawerScreenState extends State<DrawerScreen>
             ));
   }
 
-  Widget _buildDrawerScreen(BuildContext context, LogoutState state) {
-    if (state is LogoutLoading) {
+  Widget _buildDrawerScreen(BuildContext context, DrawerScreenState state) {
+    print("drawer screen logout state $state");
+    if (state is DrawerLoading) {
       return _buildDrawerScreenLoading();
     } else {
       if (MediaQuery.of(context).orientation == Orientation.landscape) {
@@ -242,10 +257,10 @@ class _DrawerScreenState extends State<DrawerScreen>
                       gradient: blueGradient,
                     ),
                     accountName: new Text(
-                        getIt.get<GoogleSignIn>().currentUser.displayName,
+                        widget.currentUser==null ? "" : widget.currentUser.displayName,
                         style: whiteSmallTextStyle),
                     accountEmail: Text(
-                      getIt.get<GoogleSignIn>().currentUser.email,
+                      widget.currentUser==null ? "" : widget.currentUser.email,
                       style: whiteExtraSmallTextStyle,
                     ),
                   )),
@@ -288,15 +303,12 @@ class _DrawerScreenState extends State<DrawerScreen>
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                getIt
-                                    .get<GoogleSignIn>()
-                                    .currentUser
-                                    .displayName,
+                                widget.currentUser==null ? "" : widget.currentUser.displayName,
                                 style: whiteSmallTextStyle)),
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              getIt.get<GoogleSignIn>().currentUser.email,
+                              widget.currentUser==null ? "" : widget.currentUser.email,
                               style: whiteExtraSmallTextStyle,
                             )),
                       ])),

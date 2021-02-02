@@ -1,12 +1,18 @@
 import 'dart:io';
 
+import 'package:bartender/blocs/profile/profile_cubit.dart';
+import 'package:bartender/blocs/profile/profile_states.dart';
 import 'package:bartender/constants.dart';
 import 'package:bartender/ui/backdrop.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 final List<String> testImgList = [
@@ -25,17 +31,61 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   File _image;
+  String _firebaseImage;
+  User _account;
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).orientation == Orientation.portrait) {
-      return _buildProfilePortraitWidget();
+    if (_account == null) {
+      final cubit = context.cubit<ProfileCubit>();
+      cubit.getInitialData();
+    }
+
+    return CubitConsumer<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        return _buildWidget(state, context);
+      },
+      listener: (context, state) {
+        return _buildWidget(state, context);
+      },
+    );
+  }
+
+  Widget _buildWidget(ProfileState state, BuildContext context) {
+    print("state is $state");
+    if (state is ProfileSuccess || state is ProfileIncomplete) {
+      if (state is ProfileSuccess) {
+        _firebaseImage = state.firebaseImageUrl;
+        _account = state.account;
+      } else if (state is ProfileIncomplete) {
+        _account = state.account;
+      }
+      if (_image != null) {
+        _uploadImageToFirebase(context);
+      }
+      if (MediaQuery.of(context).orientation == Orientation.portrait) {
+        return _buildProfilePortraitWidget(context);
+      } else {
+        return _buildProfileLandscapeWidget(context);
+      }
+    } else if (state is ProfileError) {
+      return Container(); //todo handle it with a widget
+    } else if (state is ProfileLoading || state is ProfileInitial) {
+      return _buildLoadingWidget();
+    } else if (state is ProfileEmpty) {
+      return Container(); //todo handle it with a widget
     } else {
-      return _buildProfileLandscapeWidget();
+      return Container(); //todo handle it with a widget
     }
   }
 
-  List<Widget> _buildCarouselItems() {
+  Widget _buildLoadingWidget() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  List<Widget> _buildCarouselItems(BuildContext context) {
     return testImgList
         .map(
           (item) => Container(
@@ -52,11 +102,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   //todo login redesign [Pinterest]
   //todo landscape widget
-  Widget _buildProfilePortraitWidget() {
-    return Stack(children: [_buildCarousel(), _buildTopSection()]);
+  Widget _buildProfilePortraitWidget(BuildContext context) {
+    return Stack(
+        children: [_buildCarousel(context), _buildTopSection(context)]);
   }
 
-  Widget _buildCarousel() {
+  Widget _buildCarousel(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -87,14 +138,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   autoPlayInterval: Duration(seconds: 3),
                   autoPlayAnimationDuration: Duration(milliseconds: 500),
                 ),
-                items: _buildCarouselItems(),
+                items: _buildCarouselItems(context),
               ),
             ],
           )),
     );
   }
 
-  Widget _buildLandscapeCarousel() {
+  Widget _buildLandscapeCarousel(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -107,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             autoPlayInterval: Duration(seconds: 3),
             autoPlayAnimationDuration: Duration(milliseconds: 500),
             scrollDirection: Axis.vertical),
-        items: _buildCarouselItems(),
+        items: _buildCarouselItems(context),
       ),
     );
   }
@@ -126,46 +177,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 180,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: FileImage(File(_image.path)),
-                      fit: BoxFit.fitWidth),
+                      image: FileImage(File(_image.path)), fit: BoxFit.cover),
                   borderRadius: BorderRadius.circular(90),
                 ),
               )
-            : _buildInitialsAvatar());
+            : (_firebaseImage != null
+                ? _buildAvatarWidgetFromFirebase()
+                : _buildInitialsAvatar()));
   }
 
-  CachedNetworkImage _buildInitialsAvatar() {
-    return CachedNetworkImage(
-      imageUrl: 'https://a', //todo replace with actual data
-      placeholder: (context, url) => CircularProfileAvatar(
-        '',
-        radius: 90,
-        backgroundColor: Colors.blueGrey,
-        borderWidth: 1,
-        initialsText: Text(
-          "EC", //todo replace with actual data
-          style: TextStyle(
-              fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-        ),
-        borderColor: Colors.white,
-        elevation: 8.0,
-        showInitialTextAbovePicture: true,
+  Widget _buildInitialsAvatar() {
+    return CircularProfileAvatar(
+      '',
+      radius: 90,
+      backgroundColor: Colors.blueGrey,
+      borderWidth: 1,
+      initialsText: Text(
+        _account != null
+            ? _account.displayName
+                .split(" ")
+                .map((e) => e.isNotEmpty ? e[0] : "")
+                .join()
+            : "",
+        style:
+            TextStyle(fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
       ),
-      errorWidget: (context, url, error) => CircularProfileAvatar(
-        '',
-        radius: 90,
-        backgroundColor: Colors.blueGrey,
-        borderWidth: 1,
-        initialsText: Text(
-          "EC", //todo replace with actual data
-          style: TextStyle(
-              fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-        ),
-        borderColor: Colors.white,
-        elevation: 8.0,
-        showInitialTextAbovePicture: true,
-      ),
-      fit: BoxFit.fitWidth,
+      borderColor: Colors.white,
+      elevation: 8.0,
+      showInitialTextAbovePicture: true,
     );
   }
 
@@ -184,8 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 180,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: FileImage(File(_image.path)),
-                      fit: BoxFit.fitWidth),
+                      image: FileImage(File(_image.path)), fit: BoxFit.cover),
                   borderRadius: BorderRadius.circular(90),
                 ),
               )
@@ -199,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: EdgeInsets.only(top: 12),
           child: Center(
             child: Text(
-              'Elena Cristea', //todo replace with actual data
+              _account != null ? _account.displayName : "",
               style: orientation == Orientation.portrait
                   ? whiteSmallTextStyle
                   : gradientColorTextStyle,
@@ -208,7 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         Center(
           child: Text(
-            'elena96crst@gmail.com', //todo replace with actual data
+            _account != null ? _account.email : "",
             style: orientation == Orientation.portrait
                 ? whiteSmallTextStyle
                 : gradientColorTextStyle,
@@ -218,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildTopSection() {
+  Widget _buildTopSection(BuildContext context) {
     return Container(
         height: MediaQuery.of(context).size.height * 0.4,
         decoration: BoxDecoration(
@@ -231,10 +269,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
               padding: EdgeInsets.only(top: 20),
-              child: Center(
-                  child: Wrap(children: [
-                _buildAvatarWidget(),
-              ]))),
+              child: Center(child: Wrap(children: [_buildAvatarWidget()]))),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -262,7 +297,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ]));
   }
 
-  Widget _buildTopSectionLandscape() {
+  Widget _buildTopSectionLandscape(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(
           top: 24,
@@ -303,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ]));
   }
 
-  Widget _buildProfileLandscapeWidget() {
+  Widget _buildProfileLandscapeWidget(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Row(
@@ -311,19 +346,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: _buildTopSectionLandscape(),
+            child: _buildTopSectionLandscape(context),
             flex: 1,
           ),
           Expanded(
             flex: 1,
-            child: _buildLandscapeCarousel(),
+            child: _buildLandscapeCarousel(context),
           ),
         ],
       ),
     );
   }
 
-  void _imgFromCamera() async {
+  void _requestImageFromCamera() async {
     PickedFile image = await ImagePicker()
         .getImage(source: ImageSource.camera, imageQuality: 50);
     setState(() {
@@ -331,7 +366,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void _imgFromGallery() async {
+  void _requestImageFromGallery() async {
     PickedFile image = await ImagePicker()
         .getImage(source: ImageSource.gallery, imageQuality: 50);
 
@@ -352,14 +387,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       leading: new Icon(Icons.photo_library),
                       title: new Text('Gallery'),
                       onTap: () {
-                        _imgFromGallery();
+                        _requestImageFromGallery();
                         Navigator.of(context).pop();
                       }),
                   new ListTile(
                     leading: new Icon(Icons.photo_camera),
                     title: new Text('Camera'),
                     onTap: () {
-                      _imgFromCamera();
+                      _requestImageFromCamera();
                       Navigator.of(context).pop();
                     },
                   ),
@@ -368,5 +403,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         });
+  }
+
+  Future _uploadImageToFirebase(BuildContext context) async {
+    String fileName = _account.uid;
+    var  firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('$profileAvatarDirectory/$fileName');
+    /*var  uploadTask =*/ await firebaseStorageRef.putFile(_image);
+   // var taskSnapshot = await uploadTask.onComplete;
+   // taskSnapshot.ref.getDownloadURL().then(
+        //  (value) => print("Done: $value"),
+     //   );
+
+  }
+
+  Widget _buildAvatarWidgetFromFirebase() {
+    return CachedNetworkImage(
+      imageUrl: _firebaseImage,
+      placeholder: (context, url) => _buildInitialsAvatar(),
+      errorWidget: (context, url, error) => _buildInitialsAvatar(),
+      fit: BoxFit.cover,
+    );
   }
 }

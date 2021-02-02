@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>527674689302-1itu4s7j5lid2sela650aqh1kl04191k.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.527674689302-1itu4s7j5lid2sela650aqh1kl04191k</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>527674689302-20fajagb9fspmr8mq8r7drg80ce4ug9r.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB3e42AyiyHgIo79b3QxM0YZtbo3YMERE0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>527674689302</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>ro.codeswitch.bartender</string>
+	<key>PROJECT_ID</key>
+	<string>bartender-75935</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bartender-75935.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:527674689302:ios:d8449d7a56615cd933b237</string>
+	<key>DATABASE_URL</key>
+	<string>https://bartender-75935.firebaseio.com</string>
+</dict>
+</plist>

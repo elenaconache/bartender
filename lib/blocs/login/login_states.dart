@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class LoginState extends Equatable {}
@@ -14,7 +15,7 @@ class LoginLoading extends LoginState {
 }
 
 class LoginSuccess extends LoginState {
-  final GoogleSignInAccount account;
+  final User account;
 
   @override
   List<Object> get props => [account];

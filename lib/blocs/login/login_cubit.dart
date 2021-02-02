@@ -1,5 +1,8 @@
 import 'package:bartender/data/repository/google_signin_repository.dart';
+import 'package:bartender/main.dart';
 import 'package:cubit/cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
@@ -12,12 +15,13 @@ class LoginCubit extends CubitStream<LoginState> {
   LoginCubit({@required this.repository})
       : assert(repository != null),
         super(LoginInitial()) {
-    getInitialData();
+    //   getInitialData();
+    emit(LoginEmpty());
   }
 
   bool _isInitialSignIn = true;
 
-  void getInitialData() async {
+  /*void getInitialData() async {
     try {
       emit(LoginLoading());
       repository.checkAlreadySignedIn(onAccount: (account) {
@@ -46,14 +50,33 @@ class LoginCubit extends CubitStream<LoginState> {
       emit(LoginError());
     }
   }
-
+*/
   void signIn() async {
-    try {
-      emit(LoginLoading());
-      GoogleSignInAccount account = await repository.signIn();
-      account == null ? emit(LoginEmpty()) : emit(LoginSuccess(account));
+  /*  try {
+    //  emit(LoginLoading());
+      repository.signIn(
+          onAccount: (GoogleSignInAccount account){
+            User currentUser = FirebaseAuth.instance.currentUser;
+    /*  if (account.id != currentUser.uid)
+      {
+        print("error id ${account.id} ${currentUser.uid}");
+        emit(LoginError());
+      }else{
+    print("success");*/
+    // credentials== null ? emit(LoginEmpty()) : emit(LoginSuccess(credentials));
+  //  }
+    }, onError: ()=> {
+  //  emit(LoginError())
+    });
+
+
     } catch (e) {
-      emit(LoginError());
-    }
+    print(e);
+ //   emit(LoginError());
+    }*/
+
+    await Firebase.initializeApp();
+    repository.handleSignIn().then((value) => print(value))
+        .catchError((e) => print(e));
   }
 }

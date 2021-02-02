@@ -1,6 +1,6 @@
 import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/login/login_states.dart';
-import 'package:bartender/blocs/logout/logout_cubit.dart';
+import 'package:bartender/blocs/logout/drawer_cubit.dart';
 import 'package:bartender/constants.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:bartender/main.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -78,7 +79,7 @@ class LoginScreenState extends State<LoginScreen> {
                 MaterialPageRoute(builder: (context) {
               return CubitProvider<LogoutCubit>(
                 create: (context) => getIt.get<LogoutCubit>(),
-                child: DrawerScreen(),
+                child: DrawerScreen(getCurrentUser()),
               );
             }), (Route<dynamic> route) => false);
           } else {

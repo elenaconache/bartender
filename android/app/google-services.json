@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "527674689302-20fajagb9fspmr8mq8r7drg80ce4ug9r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ro.codeswitch.bartender",
+            "certificate_hash": "290e955cb16c14d574cd26120db5e9682cd54765"
+          }
+        },
+        {
           "client_id": "527674689302-k7vnci2selgfnt4ee9flr0vs1gkru0c2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

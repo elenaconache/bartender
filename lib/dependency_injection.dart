@@ -1,7 +1,8 @@
 import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/login/login_cubit.dart';
-import 'package:bartender/blocs/logout/logout_cubit.dart';
+import 'package:bartender/blocs/logout/drawer_cubit.dart';
+import 'package:bartender/blocs/profile/profile_cubit.dart';
 import 'package:bartender/data/api/api_client.dart';
 import 'package:bartender/data/repository/bartender_repository.dart';
 import 'package:bartender/data/repository/google_signin_repository.dart';
@@ -25,8 +26,11 @@ void inject() {
   getIt.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn(
         scopes: <String>[
           'email',
+          'https://www.googleapis.com/auth/contacts.readonly'
         ],
       ));
   getIt.registerFactory<LogoutCubit>(
       () => LogoutCubit(repository: getIt.get<GoogleSignInRepository>()));
+  getIt.registerFactory<ProfileCubit>(
+      () => ProfileCubit(repository: getIt.get<GoogleSignInRepository>()));
 }

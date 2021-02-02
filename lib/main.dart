@@ -1,9 +1,13 @@
 import 'package:bartender/blocs/login/login_cubit.dart';
+import 'package:bartender/ui/drawer/drawer_screen.dart';
 import 'package:bartender/ui/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'blocs/logout/drawer_cubit.dart';
 import 'dependency_injection.dart';
 import 'i18n/bartender_localization_delegate.dart';
 
@@ -16,6 +20,19 @@ class BartenderApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return /*FutureBuilder(
+      future: getUserAndInitialize(),
+        builder:(context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.done){*/
+             _buildAppWidget();
+       /*   }else{
+            return CircularProgressIndicator();
+         }
+        },
+    );*/
+  }
+
+  Widget _buildAppWidget() {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bartender',
@@ -35,10 +52,13 @@ class BartenderApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: CubitProvider<LoginCubit>(
+      home:/* getCurrentUser() == null ?*/ CubitProvider<LoginCubit>(
         create: (context) => getIt.get<LoginCubit>(),
         child: LoginScreen(),
-      ),
+      ) /*: CubitProvider<LogoutCubit>(
+        create: (context) => getIt.get<LogoutCubit>(),
+        child: DrawerScreen(getCurrentUser()),
+      )*/,
       localizationsDelegates: [
         // ... app-specific localization delegate[s] here
         BartenderLocalizationsDelegate(),
@@ -52,4 +72,19 @@ class BartenderApp extends StatelessWidget {
       ],
     );
   }
+
+
+}
+
+User getCurrentUser()  {
+  User _user = FirebaseAuth.instance.currentUser;
+  //print("User: ${_user.displayName ?? "None"}");
+  return _user;
+}
+
+Future<User> getUserAndInitialize() async  {
+  await Firebase.initializeApp();
+  User _user = FirebaseAuth.instance.currentUser;
+  //print("User: ${_user.displayName ?? "None"}");
+  return _user;
 }
