@@ -15,6 +15,7 @@ void main() async {
   inject();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(BartenderApp());
 }
 

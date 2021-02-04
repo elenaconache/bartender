@@ -15,11 +15,12 @@ class DrinkLoading extends DrinkState {
 
 class DrinkSuccess extends DrinkState {
   final Drink drink;
+  final bool isFavorite;
 
   @override
-  List<Object> get props => [drink];
+  List<Object> get props => [drink, isFavorite];
 
-  DrinkSuccess(this.drink);
+  DrinkSuccess(this.drink, this.isFavorite);
 }
 
 class DrinkError extends DrinkState {
@@ -27,4 +28,40 @@ class DrinkError extends DrinkState {
   List<Object> get props => [];
 
   DrinkError();
+}
+
+class FavoriteSuccess extends DrinkState {
+  final Drink drink;
+
+  @override
+  List<Object> get props => [drink];
+
+  FavoriteSuccess(this.drink);
+}
+
+class FavoriteError extends DrinkState {
+  final Drink drink;
+
+  @override
+  List<Object> get props => [drink];
+
+  FavoriteError(this.drink);
+}
+
+class RemoveFavoriteSuccess extends DrinkState {
+  final Drink drink;
+
+  @override
+  List<Object> get props => [drink];
+
+  RemoveFavoriteSuccess(this.drink);
+}
+
+class RemoveFavoriteError extends DrinkState {
+  final Drink drink;
+
+  @override
+  List<Object> get props => [drink];
+
+  RemoveFavoriteError(this.drink);
 }

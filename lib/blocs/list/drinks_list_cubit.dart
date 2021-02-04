@@ -1,11 +1,11 @@
-import 'package:bartender/data/repository/bartender_repository.dart';
+import 'package:bartender/data/repository/api_repository.dart';
 import 'package:cubit/cubit.dart';
 import 'package:meta/meta.dart';
 
 import 'drinks_list_states.dart';
 
 class DrinksListCubit extends CubitStream<DrinksListState> {
-  final BartenderRepository repository;
+  final ApiRepository repository;
 
   DrinksListCubit({@required this.repository})
       : assert(repository != null),

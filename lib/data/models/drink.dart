@@ -33,4 +33,17 @@ class Drink {
         glass = jsonMap['strGlass'],
         alcoholic = jsonMap['strAlcoholic'],
         mainIngredient = jsonMap['strIngredient1'];
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'id': id,
+      'imageURL': imageURL,
+      'instructions': instructions,
+      'category': category,
+      'glass': glass,
+      'alcoholic': alcoholic,
+      'mainIngredient': mainIngredient,
+    };
+  }
 }

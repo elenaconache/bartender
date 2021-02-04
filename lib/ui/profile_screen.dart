@@ -12,7 +12,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 final List<String> testImgList = [
@@ -209,7 +208,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildAvatarWidgetLandscape() {
-    print("building avatar with ${_image.path}");
     return CircularProfileAvatar('',
         radius: 90,
         backgroundColor: Colors.blueGrey,
@@ -249,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _account != null ? _account.email : "",
             style: orientation == Orientation.portrait
                 ? whiteSmallTextStyle
-                : gradientColorTextStyle,
+                : gradientColorExtraSmallTextStyle,
           ),
         ),
       ],
@@ -314,25 +312,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              FloatingActionButton(
-                child: Icon(
-                  Icons.nights_stay,
-                  size: 24,
-                  color: Colors.white,
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: FloatingActionButton(
+                  child: Icon(
+                    Icons.nights_stay,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                  backgroundColor: gradientStartColor,
+                  onPressed: () => {},
                 ),
-                backgroundColor: gradientStartColor,
-                onPressed: () => {},
               ),
-              _buildProfileInfoWidget(Orientation.landscape),
-              FloatingActionButton(
-                child: Icon(
-                  Icons.camera_alt,
-                  size: 24,
-                  color: Colors.white,
-                ),
-                backgroundColor: gradientStartColor,
-                onPressed: () => {_showPicker(context)},
-              )
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.all(2),
+                child: _buildProfileInfoWidget(Orientation.landscape),
+              )),
+              Padding(
+                  padding: EdgeInsets.all(8),
+                  child: FloatingActionButton(
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                    backgroundColor: gradientStartColor,
+                    onPressed: () => {_showPicker(context)},
+                  ))
             ],
           ),
         ]));
@@ -407,15 +414,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future _uploadImageToFirebase(BuildContext context) async {
     String fileName = _account.uid;
-    var  firebaseStorageRef = FirebaseStorage.instance
+    var firebaseStorageRef = FirebaseStorage.instance
         .ref()
         .child('$profileAvatarDirectory/$fileName');
-    /*var  uploadTask =*/ await firebaseStorageRef.putFile(_image);
-   // var taskSnapshot = await uploadTask.onComplete;
-   // taskSnapshot.ref.getDownloadURL().then(
-        //  (value) => print("Done: $value"),
-     //   );
-
+    await firebaseStorageRef.putFile(_image);
   }
 
   Widget _buildAvatarWidgetFromFirebase() {

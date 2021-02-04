@@ -17,10 +17,15 @@ const gradientColorTextStyle = TextStyle(
   color: gradientStartColor,
   fontFamily: 'Poppins',
 );
+const gradientColorExtraSmallTextStyle = TextStyle(
+  fontSize: 12,
+  color: gradientStartColor,
+  fontFamily: 'Poppins',
+);
 const whiteExtraSmallTextStyle = TextStyle(
   fontSize: 12,
   color: Colors.white,
   fontFamily: 'Poppins',
 );
 const whiteMediumTextStyle =
-    TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 22);
+    TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 20);

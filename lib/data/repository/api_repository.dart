@@ -6,10 +6,10 @@ import 'package:bartender/data/models/drink.dart';
 import 'package:bartender/data/models/ingredient.dart';
 import 'package:meta/meta.dart';
 
-class BartenderRepository {
+class ApiRepository {
   final ApiClient apiClient;
 
-  BartenderRepository({@required this.apiClient}) : assert(apiClient != null);
+  ApiRepository({@required this.apiClient}) : assert(apiClient != null);
 
   Future<List<Drink>> getFilteredDrinks(
       {String ingredient, String category}) async {

@@ -9,9 +9,14 @@ class DrinkPersistentHeader extends SliverPersistentHeaderDelegate {
   final double paddingTop;
 
   final Drink drink;
+  final bool isFavorite;
 
   DrinkPersistentHeader(
-      {this.collapsedHeight, this.expandedHeight, this.paddingTop, this.drink});
+      {this.collapsedHeight,
+      this.expandedHeight,
+      this.paddingTop,
+      this.drink,
+      this.isFavorite});
 
   @override
   double get minExtent => this.collapsedHeight;
@@ -99,7 +104,7 @@ class DrinkPersistentHeader extends SliverPersistentHeaderDelegate {
                         color: this.makeStickyHeaderTextColor(
                             shrinkOffset, true), // Return icon color
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pop(context, isFavorite),
                     ),
                     Expanded(
                         child: Container(

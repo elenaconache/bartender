@@ -39,7 +39,11 @@ class BartenderLocalizations {
       'yes': 'Yes',
       'no': 'No',
       'title_welcome': 'Welcome',
-      'app_name_bartender': 'Bartender'
+      'app_name_bartender': 'Bartender',
+      'added_favorite': 'Added to favorites',
+      'error_add_favorite': 'Error while adding to favorites',
+      'removed_favorite': 'Removed from favorites',
+      'error_remove_favorite': 'Error while removing from favorites',
     },
     'ro': {
       'filters_unavailable': 'Momentan, filtrele nu sunt disponibile.',
@@ -69,9 +73,29 @@ class BartenderLocalizations {
       'yes': 'Da',
       'no': 'Nu',
       'title_welcome': 'Bine ai venit',
-      'app_name_bartender': 'Bartender'
+      'app_name_bartender': 'Bartender',
+      'added_favorite': 'S-a adaugat la favorite',
+      'error_add_favorite': 'Eroare la adaugarea in favorite',
+      'removed_favorite': 'Eliminat din favorite',
+      'error_remove_favorite': 'Eroare la eliminarea din favorite',
     },
   };
+
+  String get errorRemoveFavorite {
+    return _localizedValues[locale.languageCode]['error_remove_favorite'];
+  }
+
+  String get removedFavorite {
+    return _localizedValues[locale.languageCode]['removed_favorite'];
+  }
+
+  String get errorAddFavorite {
+    return _localizedValues[locale.languageCode]['error_add_favorite'];
+  }
+
+  String get addedFavorite {
+    return _localizedValues[locale.languageCode]['added_favorite'];
+  }
 
   String get bartenderAppName {
     return _localizedValues[locale.languageCode]['app_name_bartender'];

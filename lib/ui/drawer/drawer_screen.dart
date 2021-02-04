@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bartender/blocs/favorites/favorites_cubit.dart';
 import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/logout/drawer_cubit.dart';
@@ -10,7 +11,7 @@ import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
 import 'package:bartender/ui/backdrop.dart';
 import 'package:bartender/ui/drawer/drawer_item.dart';
-import 'package:bartender/ui/favorites_screen.dart';
+import 'package:bartender/ui/favorites/favorites_screen.dart';
 import 'package:bartender/ui/list/drinks_list_screen.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:bartender/ui/login_screen.dart';
@@ -21,10 +22,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class DrawerScreen extends StatefulWidget {
   final User currentUser;
+
   DrawerScreen(this.currentUser);
 
   @override
@@ -69,7 +70,10 @@ class _DrawerScreenState extends State<DrawerScreen>
       case 2:
         return StatsScreen();
       case 3:
-        return FavoritesScreen();
+        return CubitProvider<FavoritesCubit>(
+          create: (context) => getIt.get<FavoritesCubit>(),
+          child: FavoritesScreen(),
+        );
     }
     return CubitProvider<DrinksListCubit>(
       create: (context) => getIt.get<DrinksListCubit>(),
@@ -108,10 +112,7 @@ class _DrawerScreenState extends State<DrawerScreen>
               child: LoginScreen(),
             );
           }), (Route<dynamic> route) => false);
-        } /*else if(state is AccountLoaded){
-         // _account = state.account;
-          return _buildDrawerScreen(context, state);
-        }*/else {
+        } else {
           return _buildDrawerScreen(context, state);
         }
       },
@@ -257,10 +258,14 @@ class _DrawerScreenState extends State<DrawerScreen>
                       gradient: blueGradient,
                     ),
                     accountName: new Text(
-                        widget.currentUser==null ? "" : widget.currentUser.displayName,
+                        widget.currentUser == null
+                            ? ""
+                            : widget.currentUser.displayName,
                         style: whiteSmallTextStyle),
                     accountEmail: Text(
-                      widget.currentUser==null ? "" : widget.currentUser.email,
+                      widget.currentUser == null
+                          ? ""
+                          : widget.currentUser.email,
                       style: whiteExtraSmallTextStyle,
                     ),
                   )),
@@ -303,12 +308,16 @@ class _DrawerScreenState extends State<DrawerScreen>
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                widget.currentUser==null ? "" : widget.currentUser.displayName,
+                                widget.currentUser == null
+                                    ? ""
+                                    : widget.currentUser.displayName,
                                 style: whiteSmallTextStyle)),
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              widget.currentUser==null ? "" : widget.currentUser.email,
+                              widget.currentUser == null
+                                  ? ""
+                                  : widget.currentUser.email,
                               style: whiteExtraSmallTextStyle,
                             )),
                       ])),
