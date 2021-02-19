@@ -50,6 +50,7 @@ dependencies:
   firebase_analytics: ^5.0.6
   firebase_auth: ^0.20.0+1
   flushbar: ^1.10.4
+  fl_chart: ^0.12.2
 
 dev_dependencies:
   flutter_test:

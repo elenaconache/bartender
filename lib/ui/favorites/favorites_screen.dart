@@ -40,7 +40,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (deviceOrientation == Orientation.portrait) {
       return Container(
           color: Colors.transparent,
+          height: MediaQuery.of(context).size.height,
           child: GridView.count(
+            padding: EdgeInsets.only(bottom: 48),
             crossAxisCount: 2,
             children: _drinks.map((Drink d) {
               return DrinkTile(
@@ -94,7 +96,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       padding: EdgeInsets.only(
         left: 8.0,
         right: 8.0,
-        bottom: 48.0,
       ),
       child: _buildDrinksWidgets(MediaQuery.of(context).orientation),
     );

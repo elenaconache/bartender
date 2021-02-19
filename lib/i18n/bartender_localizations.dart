@@ -44,6 +44,9 @@ class BartenderLocalizations {
       'error_add_favorite': 'Error while adding to favorites',
       'removed_favorite': 'Removed from favorites',
       'error_remove_favorite': 'Error while removing from favorites',
+      'title_ingredients_chart': 'Favorite cocktail ingredients',
+      'label_unknown': 'Unknown',
+      'label_other': 'Other',
     },
     'ro': {
       'filters_unavailable': 'Momentan, filtrele nu sunt disponibile.',
@@ -78,8 +81,23 @@ class BartenderLocalizations {
       'error_add_favorite': 'Eroare la adaugarea in favorite',
       'removed_favorite': 'Eliminat din favorite',
       'error_remove_favorite': 'Eroare la eliminarea din favorite',
+      'title_ingredients_chart': 'Ingredientele favorite de cocktail',
+      'label_unknown': 'Necunoscut',
+      'label_other': 'Altul',
     },
   };
+
+  String get labelUnknown {
+    return _localizedValues[locale.languageCode]['label_unknown'];
+  }
+
+  String get labelOther {
+    return _localizedValues[locale.languageCode]['label_other'];
+  }
+
+  String get titleIngredientsChart {
+    return _localizedValues[locale.languageCode]['title_ingredients_chart'];
+  }
 
   String get errorRemoveFavorite {
     return _localizedValues[locale.languageCode]['error_remove_favorite'];

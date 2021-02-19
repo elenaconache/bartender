@@ -4,6 +4,7 @@ import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/logout/drawer_cubit.dart';
 import 'package:bartender/blocs/profile/profile_cubit.dart';
+import 'package:bartender/blocs/stats/stats_cubit.dart';
 import 'package:bartender/data/api/api_client.dart';
 import 'package:bartender/data/repository/api_repository.dart';
 import 'package:bartender/data/repository/database_repository.dart';
@@ -39,4 +40,6 @@ void inject() {
       () => ProfileCubit(repository: getIt.get<GoogleSignInRepository>()));
   getIt.registerFactory<FavoritesCubit>(() =>
       FavoritesCubit(databaseRepository: getIt.get<DatabaseRepository>()));
+  getIt.registerFactory<StatsCubit>(
+      () => StatsCubit(databaseRepository: getIt.get<DatabaseRepository>()));
 }

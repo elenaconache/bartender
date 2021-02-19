@@ -19,56 +19,66 @@ class ApiClient {
     } else if (category != null) {
       queryParams['c'] = category;
     }
-    final uri = Uri.https(_baseURL, '/api/json/v1/1/filter.php', queryParams);
-    final jsonResponse = await _getJson(uri);
-    if (jsonResponse == null || jsonResponse['drinks'] == null) {
-      print('Error retrieving filtered drinks.');
+    var response =
+        await callApi('/api/json/v1/1/filter.php', queryParams, 'drinks');
+    if (response != null) {
+      final drinks = <Drink>[];
+      for (var d in response) {
+        drinks.add(Drink.fromJson(d));
+      }
+      return drinks;
+    } else {
       return null;
     }
-    final drinks = <Drink>[];
-    for (var d in jsonResponse['drinks']) {
-      drinks.add(Drink.fromJson(d));
-    }
-    return drinks;
   }
 
   Future<List<Ingredient>> getIngredients() async {
-    final uri = Uri.https(_baseURL, '/api/json/v1/1/list.php', {'i': 'list'});
-    final jsonResponse = await _getJson(uri);
-    if (jsonResponse == null || jsonResponse['drinks'] == null) {
-      print('Error retrieving ingredients.');
+    var response =
+        await callApi('/api/json/v1/1/list.php', {'i': 'list'}, 'drinks');
+    if (response != null) {
+      final ingredients = <Ingredient>[];
+      for (var i in response) {
+        ingredients.add(Ingredient.fromJson(i));
+      }
+      return ingredients;
+    } else {
       return null;
     }
-    final ingredients = <Ingredient>[];
-    for (var i in jsonResponse['drinks']) {
-      ingredients.add(Ingredient.fromJson(i));
-    }
-    return ingredients;
   }
 
   Future<List<Category>> getCategories() async {
-    final uri = Uri.https(_baseURL, '/api/json/v1/1/list.php', {'c': 'list'});
-    final jsonResponse = await _getJson(uri);
-    if (jsonResponse == null || jsonResponse['drinks'] == null) {
-      print('Error retrieving categories.');
+    var response =
+        await callApi('/api/json/v1/1/list.php', {'c': 'list'}, 'drinks');
+    if (response != null) {
+      final categories = <Category>[];
+      for (var c in response) {
+        categories.add(Category.fromJson(c));
+      }
+      return categories;
+    } else {
       return null;
     }
-    final categories = <Category>[];
-    for (var c in jsonResponse['drinks']) {
-      categories.add(Category.fromJson(c));
-    }
-    return categories;
   }
 
   Future<Drink> getDrink(String id) async {
-    final uri = Uri.https(_baseURL, '/api/json/v1/1/lookup.php', {'i': id});
-    final jsonResponse = await _getJson(uri);
-    if (jsonResponse == null || jsonResponse['drinks'] == null) {
-      print('Error retrieving drink details.');
+    var response =
+        await callApi('/api/json/v1/1/lookup.php', {'i': id}, 'drinks');
+    if (response != null) {
+      return Drink.fromJson(response[0]);
+    } else {
       return null;
     }
-    final Drink drink = Drink.fromJson(jsonResponse['drinks'][0]);
-    return drink;
+  }
+
+  Future<dynamic> callApi(
+      String path, Map<String, String> params, String responseKey) async {
+    final uri = Uri.https(_baseURL, path, params);
+    final jsonResponse = await _getJson(uri);
+    if (jsonResponse == null || jsonResponse[responseKey] == null) {
+      print('Api call error');
+      return null;
+    }
+    return jsonResponse[responseKey];
   }
 
   /// Fetches and decodes a JSON object represented as a Dart [Map].

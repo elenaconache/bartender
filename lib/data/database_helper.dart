@@ -15,6 +15,7 @@ class DatabaseHelper {
   static final columnGlass = 'glass';
   static final columnAlcoholic = 'alcoholic';
   static final columnMainIngredient = 'mainIngredient';
+  static final count = 'c';
 
   DatabaseHelper._privateConstructor();
 
@@ -35,17 +36,10 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    await db.execute('''
-          CREATE TABLE $drinksTable (
-            $columnId TEXT PRIMARY KEY,
-            $columnName TEXT NOT NULL,
-            $columnImageUrl TEXT NOT NULL,
-            $columnInstructions TEXT NOT NULL,
-            $columnCategory TEXT NOT NULL,
-            $columnGlass TEXT NOT NULL,
-            $columnAlcoholic TEXT NOT NULL,
-            $columnMainIngredient TEXT NOT NULL,
-          )
-          ''');
+    await db.execute('''CREATE TABLE $drinksTable($columnId TEXT PRIMARY KEY,
+        $columnName TEXT NOT NULL,$columnImageUrl TEXT NOT NULL,
+        $columnInstructions TEXT NOT NULL,$columnCategory TEXT NOT NULL,
+        $columnGlass TEXT NOT NULL,$columnAlcoholic TEXT NOT NULL,
+        $columnMainIngredient TEXT NOT NULL)''');
   }
 }

@@ -51,4 +51,11 @@ class DatabaseRepository {
       whereArgs: [id],
     );
   }
+
+  Future<dynamic> getIngredientFrequencies() async {
+    final Database db = await DatabaseHelper.instance.database;
+    return db.rawQuery(
+        "select ${DatabaseHelper.columnMainIngredient}, count(*) as ${DatabaseHelper.count} from ${DatabaseHelper.drinksTable} "
+        "group by ${DatabaseHelper.columnMainIngredient} order by ${DatabaseHelper.count} desc");
+  }
 }

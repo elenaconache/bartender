@@ -6,6 +6,7 @@ import 'package:bartender/blocs/login/login_cubit.dart';
 import 'package:bartender/blocs/logout/drawer_cubit.dart';
 import 'package:bartender/blocs/logout/drawer_state.dart';
 import 'package:bartender/blocs/profile/profile_cubit.dart';
+import 'package:bartender/blocs/stats/stats_cubit.dart';
 import 'package:bartender/constants.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
@@ -16,7 +17,7 @@ import 'package:bartender/ui/list/drinks_list_screen.dart';
 import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:bartender/ui/login_screen.dart';
 import 'package:bartender/ui/profile_screen.dart';
-import 'package:bartender/ui/stats_screen.dart';
+import 'package:bartender/ui/stats/stats_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,11 @@ class _DrawerScreenState extends State<DrawerScreen>
           child: DrinksListScreen(),
         );
       case 2:
-        return StatsScreen();
+        return CubitProvider<StatsCubit>(
+          create: (context) => getIt.get<StatsCubit>(),
+          child: StatsScreen(),
+        );
+      // return StatsScreen();
       case 3:
         return CubitProvider<FavoritesCubit>(
           create: (context) => getIt.get<FavoritesCubit>(),
@@ -304,7 +309,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                       decoration: BoxDecoration(
                         gradient: blueGradient,
                       ),
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      child: Column(mainAxisSize: MainAxisSize.max, children: [
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
