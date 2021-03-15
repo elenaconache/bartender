@@ -1,4 +1,6 @@
 import 'package:bartender/blocs/profile/profile_states.dart';
+import 'package:bartender/data/models/drink.dart';
+import 'package:bartender/data/repository/database_repository.dart';
 import 'package:bartender/data/repository/google_signin_repository.dart';
 import 'package:bartender/main.dart';
 import 'package:cubit/cubit.dart';
@@ -9,63 +11,41 @@ import 'package:meta/meta.dart';
 const String profileAvatarDirectory = "avatars";
 
 class ProfileCubit extends CubitStream<ProfileState> {
-  final GoogleSignInRepository repository;
+  final GoogleSignInRepository signInRepository;
+  final DatabaseRepository databaseRepository;
 
-  ProfileCubit({@required this.repository})
-      : assert(repository != null),
-        super(ProfileLoading());
+  ProfileCubit(
+      {@required this.signInRepository, @required this.databaseRepository})
+      : super(ProfileLoading());
 
-  void getInitialData() async{
-    //try {
-      emit(ProfileLoading());
-
-      var user = getCurrentUser();
-      if(user != null){
-        try {
-          if (FirebaseStorage.instance.ref().child(user.uid) != null) {
-            String url = await FirebaseStorage.instance
-                .ref()
-                .child("$profileAvatarDirectory/${user.uid}")
-                .getDownloadURL();
-            emit(ProfileSuccess(user, url));
-          } else {
-            emit(ProfileIncomplete(user));
-          }
-        } on Exception catch (e) {
-          print(e.toString());
-          emit(ProfileIncomplete(user));
-        }
-      }else{
-        emit(ProfileEmpty());
-      }
-
-      /*repository.checkAlreadySignedIn(onAccount: (account) async {
-        if (account != null) {
-          print(account.toString());
-          try {
-            if (FirebaseStorage.instance.ref().child(account.id) != null) {
-              String url = await FirebaseStorage.instance
-                  .ref()
-                  .child("$profileAvatarDirectory/${account.id}")
-                  .getDownloadURL();
-              emit(ProfileSuccess(account, url));
-            } else {
-              emit(ProfileIncomplete(account));
-            }
-          } on Exception catch (e) {
-            print(e.toString());
-            emit(ProfileIncomplete(account));
-          }
-        } else {
-          emit(ProfileEmpty());
-        }
-      }, onError: (Object exception) {
-        print(exception.toString());
-        emit(ProfileError());
-      });
+  void getInitialData() async {
+    emit(ProfileLoading());
+    var drinks;
+    try {
+      drinks = await databaseRepository.getFavoriteDrinks();
     } catch (e) {
-      print(e.toString());
-      emit(ProfileError());
-    }*/
+      drinks = [] as List<Drink>;
+    }
+
+    var user = getCurrentUser();
+    if (user != null) {
+      try {
+        if (FirebaseStorage.instance.ref().child(user.uid) != null) {
+          String url = await FirebaseStorage.instance
+              .ref()
+              .child("$profileAvatarDirectory/${user.uid}")
+              .getDownloadURL();
+
+          emit(ProfileSuccess(user, url, drinks));
+        } else {
+          emit(ProfileIncomplete(user, drinks));
+        }
+      } on Exception catch (e) {
+        print(e.toString());
+        emit(ProfileIncomplete(user, drinks));
+      }
+    } else {
+      emit(ProfileEmpty());
+    }
   }
 }

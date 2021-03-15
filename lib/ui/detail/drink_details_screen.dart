@@ -4,7 +4,11 @@ import 'package:bartender/blocs/detail/drink_cubit.dart';
 import 'package:bartender/blocs/detail/drink_state.dart';
 import 'package:bartender/constants.dart';
 import 'package:bartender/data/models/drink.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
+import 'package:bartender/theme/colors.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:bartender/ui/detail/drink_persistent_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flushbar/flushbar.dart';
@@ -12,10 +16,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-
-import '../backdrop.dart';
-
-const Color blueTextColor = Color(0xff004861);
 
 class DrinkDetailsScreen extends StatefulWidget {
   final Drink drink;
@@ -68,23 +68,23 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
         if (state is FavoriteSuccess) {
           Flushbar(
             message: BartenderLocalizations.of(context).addedFavorite,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
           )..show(context);
         } else if (state is FavoriteError) {
           Flushbar(
             message: BartenderLocalizations.of(context).errorAddFavorite,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
           )..show(context);
         }
         if (state is RemoveFavoriteSuccess) {
           Flushbar(
             message: BartenderLocalizations.of(context).removedFavorite,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
           )..show(context);
         } else if (state is FavoriteError) {
           Flushbar(
             message: BartenderLocalizations.of(context).errorRemoveFavorite,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
           )..show(context);
         } else {
           return _buildWidget(state);
@@ -206,7 +206,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
   Widget _buildTextWidget(String text) {
     return Padding(
         padding: EdgeInsets.only(left: 24, top: 12, right: 24, bottom: 12),
-        child: Text(text, style: whiteSmallTextStyle));
+        child: Text(text, style: Theme.of(context).textTheme.bodyText1));
   }
 
   Widget _buildTagWidget(String text, IconData ic) {
@@ -217,8 +217,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
             child: Container(
               padding:
                   EdgeInsets.only(left: 24, right: 24, top: 12, bottom: 12),
-              //  width: double.infinity,
-              decoration: new BoxDecoration(
+              decoration: BoxDecoration(
                   color: Colors.grey.shade200.withOpacity(0.4),
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(40),
@@ -228,10 +227,15 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
                     padding: EdgeInsets.only(right: 8),
                     child: Icon(
                       ic,
-                      color: Colors.white,
-                      size: 36.0,
+                      color: getIt.get<ThemeHelper>().currentTheme ==
+                              BartenderTheme.DARK
+                          ? Colors.white
+                          : Colors.black87,
+                      size: 24.0,
                     )),
-                Expanded(child: Text(text, style: whiteMediumTextStyle)),
+                Expanded(
+                    child: Text(text,
+                        style: Theme.of(context).textTheme.bodyText1)),
               ]),
             ),
           ),
@@ -241,7 +245,11 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
   Widget _buildSuccessWidgetPortrait(Drink drink, bool isFavorite) {
     return Scaffold(
         body: Container(
-            decoration: BoxDecoration(gradient: blueGradient),
+            decoration: BoxDecoration(
+                gradient: getIt.get<ThemeHelper>().currentTheme ==
+                        BartenderTheme.LIGHT
+                    ? lightBlueGradient
+                    : blueGradient),
             child: CustomScrollView(
               slivers: [
                 SliverPersistentHeader(
@@ -283,14 +291,16 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
             curve: Curves.easeInOut,
             duration: Duration(milliseconds: 300),
             child:
-                _buildFavoriteButton(Orientation.portrait, drink, isFavorite))
-        //),
-        );
+                _buildFavoriteButton(Orientation.portrait, drink, isFavorite)));
   }
 
   Widget _buildSuccessWidgetLandscape(Drink drink, bool isFavorite) {
     return Container(
-      decoration: BoxDecoration(gradient: blueGradient),
+      decoration: BoxDecoration(
+          gradient:
+              getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                  ? lightBlueGradient
+                  : blueGradient),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -347,7 +357,11 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildLoadingWidgetPortrait() {
     return Container(
-        decoration: BoxDecoration(gradient: blueGradient),
+        decoration: BoxDecoration(
+            gradient:
+                getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                    ? lightBlueGradient
+                    : blueGradient),
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
@@ -383,7 +397,11 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildLoadingWidgetLandscape() {
     return Container(
-      decoration: BoxDecoration(gradient: blueGradient),
+      decoration: BoxDecoration(
+          gradient:
+              getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                  ? lightBlueGradient
+                  : blueGradient),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -434,7 +452,11 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildErrorWidgetPortrait() {
     return Container(
-        decoration: BoxDecoration(gradient: blueGradient),
+        decoration: BoxDecoration(
+            gradient:
+                getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                    ? lightBlueGradient
+                    : blueGradient),
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
@@ -484,7 +506,11 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
 
   Widget _buildErrorWidgetLandscape() {
     return Container(
-      decoration: BoxDecoration(gradient: blueGradient),
+      decoration: BoxDecoration(
+          gradient:
+              getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                  ? lightBlueGradient
+                  : blueGradient),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -553,11 +579,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
       padding: EdgeInsets.only(left: 24, top: 24, right: 24),
       child: Text(
         s,
-        style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w500),
+        style: Theme.of(context).textTheme.headline2,
       ),
     );
   }
@@ -571,7 +593,7 @@ class _DrinkDetailsScreenState extends State<DrinkDetailsScreen> {
         child: Icon(
           isFavorite ? Icons.favorite : Icons.favorite_outline,
           size: 24,
-          color: gradientStartColor,
+          color: gradientStartColorDark,
         ),
         backgroundColor: Colors.white,
         onPressed: () {

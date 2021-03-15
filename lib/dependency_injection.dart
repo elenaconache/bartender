@@ -9,6 +9,8 @@ import 'package:bartender/data/api/api_client.dart';
 import 'package:bartender/data/repository/api_repository.dart';
 import 'package:bartender/data/repository/database_repository.dart';
 import 'package:bartender/data/repository/google_signin_repository.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -36,10 +38,15 @@ void inject() {
       ));
   getIt.registerFactory<LogoutCubit>(
       () => LogoutCubit(repository: getIt.get<GoogleSignInRepository>()));
-  getIt.registerFactory<ProfileCubit>(
-      () => ProfileCubit(repository: getIt.get<GoogleSignInRepository>()));
+  getIt.registerFactory<ProfileCubit>(() => ProfileCubit(
+      signInRepository: getIt.get<GoogleSignInRepository>(),
+      databaseRepository: getIt.get<DatabaseRepository>()));
   getIt.registerFactory<FavoritesCubit>(() =>
       FavoritesCubit(databaseRepository: getIt.get<DatabaseRepository>()));
   getIt.registerFactory<StatsCubit>(
       () => StatsCubit(databaseRepository: getIt.get<DatabaseRepository>()));
+
+  getIt.registerLazySingleton<ThemeHelper>(() => ThemeHelper());
+  getIt.registerLazySingleton<SharedPreferencesRepository>(
+      () => SharedPreferencesRepository());
 }

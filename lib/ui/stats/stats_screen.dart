@@ -1,7 +1,9 @@
 import 'package:bartender/blocs/stats/stats_cubit.dart';
 import 'package:bartender/blocs/stats/stats_state.dart';
-import 'package:bartender/constants.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:bartender/ui/stats/chart_legend_item.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
@@ -99,7 +101,7 @@ class _StatsScreenState extends State<StatsScreen> {
         alignment: Alignment.topCenter,
         child: Text(
           BartenderLocalizations.of(context).titleIngredientsChart,
-          style: whiteMediumTextStyle,
+          style: Theme.of(context).textTheme.headline2,
         ));
   }
 
@@ -148,6 +150,10 @@ class _StatsScreenState extends State<StatsScreen> {
                       color: chartColors[index],
                       text: key,
                       isSquare: true,
+                      textColor: getIt.get<ThemeHelper>().currentTheme ==
+                              BartenderTheme.DARK
+                          ? Colors.white70
+                          : Colors.black87,
                     );
                   }),
             )));

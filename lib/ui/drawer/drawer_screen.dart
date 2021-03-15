@@ -8,13 +8,14 @@ import 'package:bartender/blocs/logout/drawer_state.dart';
 import 'package:bartender/blocs/profile/profile_cubit.dart';
 import 'package:bartender/blocs/stats/stats_cubit.dart';
 import 'package:bartender/constants.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
-import 'package:bartender/ui/backdrop.dart';
+import 'package:bartender/theme/colors.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:bartender/ui/drawer/drawer_item.dart';
 import 'package:bartender/ui/favorites/favorites_screen.dart';
 import 'package:bartender/ui/list/drinks_list_screen.dart';
-import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:bartender/ui/login_screen.dart';
 import 'package:bartender/ui/profile_screen.dart';
 import 'package:bartender/ui/stats/stats_screen.dart';
@@ -22,7 +23,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:provider/provider.dart';
 
 class DrawerScreen extends StatefulWidget {
   final User currentUser;
@@ -41,7 +42,6 @@ class _DrawerScreenState extends State<DrawerScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print("didchangedependencies drawer screen");
     _drawerItems = [
       DrawerItem(BartenderLocalizations.of(context).profileLabel,
           Icons.account_circle),
@@ -104,34 +104,34 @@ class _DrawerScreenState extends State<DrawerScreen>
   @override
   Widget build(BuildContext context) {
     print("build drawer screen");
-    return CubitConsumer<LogoutCubit, DrawerScreenState>(
-      builder: (context, state) {
-        return _buildDrawerScreen(context, state);
-      },
-      listener: (context, state) {
-        if (state is LogoutFinished) {
-          Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (context) {
-            return CubitProvider<LoginCubit>(
-              create: (context) => getIt.get<LoginCubit>(),
-              child: LoginScreen(),
-            );
-          }), (Route<dynamic> route) => false);
-        } else {
+    return ChangeNotifierProvider<ThemeHelper>(create: (context) {
+      return getIt.get<ThemeHelper>();
+    }, child: Consumer<ThemeHelper>(builder: (context, model, _) {
+      return CubitConsumer<LogoutCubit, DrawerScreenState>(
+        builder: (context, state) {
           return _buildDrawerScreen(context, state);
-        }
-      },
-    );
+        },
+        listener: (context, state) {
+          if (state is LogoutFinished) {
+            Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) {
+              return CubitProvider<LoginCubit>(
+                create: (context) => getIt.get<LoginCubit>(),
+                child: LoginScreen(),
+              );
+            }), (Route<dynamic> route) => false);
+          } else {
+            return _buildDrawerScreen(context, state);
+          }
+        },
+      );
+    }));
   }
 
   Widget _buildBackTitle(String text) {
     return Text(
       text,
-      style: TextStyle(
-          color: Colors.white,
-          fontFamily: 'Poppins',
-          fontStyle: FontStyle.normal,
-          fontSize: 20),
+      style: Theme.of(context).textTheme.headline2,
     );
   }
 
@@ -140,24 +140,21 @@ class _DrawerScreenState extends State<DrawerScreen>
       preferredSize: Size(double.infinity, kToolbarHeight),
       child: Builder(
         builder: (context) => AppBar(
-          centerTitle: true,
-          elevation: 0.0,
+          iconTheme: Theme.of(context).iconTheme,
+          textTheme: Theme.of(context).textTheme,
           backgroundColor: _drawerSelectionIndex == 0
-              ? gradientStartColor
+              ? getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                  ? gradientStartColor
+                  : gradientStartColorDark
               : Colors.transparent,
           leading: IconButton(
             onPressed: () => {Scaffold.of(context).openDrawer()},
             iconSize: 30,
             icon: Icon(
               Icons.menu,
-              color: Colors.white,
             ),
           ),
           title: _buildBackTitle(_drawerItems[_drawerSelectionIndex].title),
-          actionsIconTheme: IconThemeData(
-            size: 30.0,
-            color: Colors.white,
-          ),
         ),
       ),
     );
@@ -172,17 +169,25 @@ class _DrawerScreenState extends State<DrawerScreen>
                   new Text(BartenderLocalizations.of(context).logoutMessage),
               actions: <Widget>[
                 FlatButton(
-                  child: PlatformText(BartenderLocalizations.of(context).yes,
-                      style: TextStyle(color: gradientStartColor)),
+                  child: Text(BartenderLocalizations.of(context).yes,
+                      style: TextStyle(
+                          color: getIt.get<ThemeHelper>().currentTheme ==
+                                  BartenderTheme.LIGHT
+                              ? gradientStartColorDark
+                              : gradientStartColor)),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _logout();
                   },
                 ),
                 FlatButton(
-                  child: PlatformText(
+                  child: Text(
                     BartenderLocalizations.of(context).no,
-                    style: TextStyle(color: gradientStartColor),
+                    style: TextStyle(
+                        color: getIt.get<ThemeHelper>().currentTheme ==
+                                BartenderTheme.LIGHT
+                            ? gradientStartColorDark
+                            : gradientStartColor),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -207,7 +212,11 @@ class _DrawerScreenState extends State<DrawerScreen>
               actions: <Widget>[
                 FlatButton(
                   child: Text(BartenderLocalizations.of(context).yes,
-                      style: TextStyle(color: gradientStartColor)),
+                      style: TextStyle(
+                          color: getIt.get<ThemeHelper>().currentTheme ==
+                                  BartenderTheme.LIGHT
+                              ? gradientStartColorDark
+                              : gradientStartColor)),
                   onPressed: () {
                     Navigator.of(context).pop();
                     _logout();
@@ -215,7 +224,11 @@ class _DrawerScreenState extends State<DrawerScreen>
                 ),
                 FlatButton(
                   child: Text(BartenderLocalizations.of(context).no,
-                      style: TextStyle(color: gradientStartColor)),
+                      style: TextStyle(
+                          color: getIt.get<ThemeHelper>().currentTheme ==
+                                  BartenderTheme.LIGHT
+                              ? gradientStartColorDark
+                              : gradientStartColor)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -246,7 +259,11 @@ class _DrawerScreenState extends State<DrawerScreen>
       );
     }
     return Container(
-        decoration: BoxDecoration(gradient: blueGradient),
+        decoration: BoxDecoration(
+            gradient:
+                getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                    ? lightBlueGradient
+                    : blueGradient),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: _buildAppBar(),
@@ -257,24 +274,52 @@ class _DrawerScreenState extends State<DrawerScreen>
             child: Drawer(
               child: new Column(
                 children: <Widget>[
-                  Container(
-                      child: UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(
-                      gradient: blueGradient,
-                    ),
-                    accountName: new Text(
-                        widget.currentUser == null
-                            ? ""
-                            : widget.currentUser.displayName,
-                        style: whiteSmallTextStyle),
-                    accountEmail: Text(
-                      widget.currentUser == null
-                          ? ""
-                          : widget.currentUser.email,
-                      style: whiteExtraSmallTextStyle,
-                    ),
-                  )),
-                  new Column(children: drawerOptions)
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                        decoration: BoxDecoration(
+                            gradient: getIt.get<ThemeHelper>().currentTheme ==
+                                    BartenderTheme.LIGHT
+                                ? lightBlueGradient
+                                : blueGradient),
+                        child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                      widget.currentUser == null
+                                          ? ""
+                                          : widget.currentUser.displayName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1),
+                                  Text(
+                                    widget.currentUser == null
+                                        ? ""
+                                        : widget.currentUser.email,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
+                              ),
+                            ))),
+                  ),
+                  Expanded(
+                      flex: 3,
+                      child: Container(
+                        color: getIt.get<ThemeHelper>().currentTheme ==
+                                BartenderTheme.DARK
+                            ? Colors.black54
+                            : Colors.white,
+                        child: Column(
+                          children: drawerOptions,
+                          mainAxisSize: MainAxisSize.max,
+                        ),
+                      ))
                 ],
               ),
             ),
@@ -292,7 +337,11 @@ class _DrawerScreenState extends State<DrawerScreen>
       );
     }
     return Container(
-        decoration: BoxDecoration(gradient: blueGradient),
+        decoration: BoxDecoration(
+            gradient:
+                getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                    ? lightBlueGradient
+                    : blueGradient),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: _buildAppBar(),
@@ -307,8 +356,10 @@ class _DrawerScreenState extends State<DrawerScreen>
                       padding: EdgeInsets.all(24.0),
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        gradient: blueGradient,
-                      ),
+                          gradient: getIt.get<ThemeHelper>().currentTheme ==
+                                  BartenderTheme.LIGHT
+                              ? lightBlueGradient
+                              : blueGradient),
                       child: Column(mainAxisSize: MainAxisSize.max, children: [
                         Align(
                             alignment: Alignment.centerLeft,
@@ -316,14 +367,14 @@ class _DrawerScreenState extends State<DrawerScreen>
                                 widget.currentUser == null
                                     ? ""
                                     : widget.currentUser.displayName,
-                                style: whiteSmallTextStyle)),
+                                style: Theme.of(context).textTheme.bodyText1)),
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               widget.currentUser == null
                                   ? ""
                                   : widget.currentUser.email,
-                              style: whiteExtraSmallTextStyle,
+                              style: Theme.of(context).textTheme.bodyText2,
                             )),
                       ])),
                   Column(
@@ -343,14 +394,19 @@ class _DrawerScreenState extends State<DrawerScreen>
         leading: new Icon(
           d.icon,
           color: _drawerSelectionIndex == index
-              ? gradientStartColor
+              ? getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                  ? gradientStartColorDark
+                  : gradientStartColor
               : dropdownArrowColor,
         ),
         title: Text(
           d.title,
           style: TextStyle(
               color: _drawerSelectionIndex == index
-                  ? gradientStartColor
+                  ? getIt.get<ThemeHelper>().currentTheme ==
+                          BartenderTheme.LIGHT
+                      ? gradientStartColorDark
+                      : gradientStartColor
                   : dropdownArrowColor),
         ),
         selected: index == _drawerSelectionIndex,
@@ -367,14 +423,19 @@ class _DrawerScreenState extends State<DrawerScreen>
         leading: new Icon(
           d.icon,
           color: _drawerSelectionIndex == index
-              ? gradientStartColor
+              ? getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                  ? gradientStartColorDark
+                  : gradientStartColor
               : dropdownArrowColor,
         ),
         title: Text(
           d.title,
           style: TextStyle(
               color: _drawerSelectionIndex == index
-                  ? gradientStartColor
+                  ? getIt.get<ThemeHelper>().currentTheme ==
+                          BartenderTheme.LIGHT
+                      ? gradientStartColorDark
+                      : gradientStartColor
                   : dropdownArrowColor),
         ),
         selected: index == _drawerSelectionIndex,
@@ -385,7 +446,11 @@ class _DrawerScreenState extends State<DrawerScreen>
 
   Widget _buildDrawerScreenLoading() {
     return Container(
-        decoration: BoxDecoration(gradient: blueGradient),
+        decoration: BoxDecoration(
+            gradient:
+                getIt.get<ThemeHelper>().currentTheme == BartenderTheme.LIGHT
+                    ? lightBlueGradient
+                    : blueGradient),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: _buildAppBar(),

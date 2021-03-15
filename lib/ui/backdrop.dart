@@ -2,14 +2,15 @@ import 'dart:math' as math;
 
 import 'package:bartender/blocs/list/drinks_list_cubit.dart';
 import 'package:bartender/blocs/list/drinks_list_states.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/dependency_injection.dart';
+import 'package:bartender/theme/colors.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:meta/meta.dart';
 
 const double _kFlingVelocity = 2.0;
-const Color gradientStartColor = Color(0xff004861);
-const Color gradientEndColor = Color(0xff013E53);
-const frontTitleBackground = Color(0xffEBEEF1);
 
 class _BackdropPanel extends StatelessWidget {
   _BackdropPanel({
@@ -30,45 +31,54 @@ class _BackdropPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 2.0,
-      color: frontTitleBackground,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(20.0),
-        topRight: Radius.circular(20.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onVerticalDragUpdate: onVerticalDragUpdate,
-            onVerticalDragEnd: onVerticalDragEnd,
-            onTap: onTap,
-            child: Container(
-              height: 52.0,
-              alignment: AlignmentDirectional.center,
-              child: DefaultTextStyle(
-                style: Theme.of(context).textTheme.headline6,
-                child: title,
-              ),
+        elevation: 2.0,
+        color: getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+            ? frontTitleBackgroundDark
+            : frontTitleBackground,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+            border: Border.all(
+              color: Colors.white,
+              width: 1.0,
             ),
           ),
-          Divider(
-            height: 1.0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onVerticalDragUpdate: onVerticalDragUpdate,
+                onVerticalDragEnd: onVerticalDragEnd,
+                onTap: onTap,
+                child: Container(
+                  height: 52.0,
+                  alignment: AlignmentDirectional.center,
+                  child: DefaultTextStyle(
+                    style: Theme.of(context).textTheme.headline6,
+                    child: title,
+                  ),
+                ),
+              ),
+              Divider(
+                height: 1.0,
+              ),
+              Expanded(
+                child: child,
+              ),
+            ],
           ),
-          Expanded(
-            child: child,
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }
 
-/// Builds a Backdrop.
-/// A Backdrop widget has two panels, front and back. The front panel is shown
-/// by default, and slides down to show the back panel, from which a user
-/// can make a selection.
 class Backdrop extends StatefulWidget {
   final Widget frontPanel;
   final Widget backPanel;
@@ -94,9 +104,6 @@ class _BackdropState extends State<Backdrop>
   @override
   void initState() {
     super.initState();
-    // This creates an [AnimationController] that can allows for animation for
-    // the BackdropPanel. 0.00 means that the front panel is in "tab" (hidden)
-    // mode, while 1.0 means that the front panel is open.
     _controller = AnimationController(
       duration: Duration(milliseconds: 300),
       value: 0,

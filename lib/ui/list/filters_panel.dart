@@ -1,26 +1,33 @@
-import 'package:bartender/constants.dart';
 import 'package:bartender/data/models/category.dart';
 import 'package:bartender/data/models/ingredient.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
+import 'package:bartender/theme/colors.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:meta/meta.dart';
 
 const _padding = EdgeInsets.all(16.0);
-const _labelColor = Color(0xff3333333);
-const borderColor = Color(0x1500001F);
-const _hintColor = Color(0xff000000);
-const iconColor = Color(0xff004861);
-const dropdownArrowColor = Color(0xff606262);
 const _filterLabelTextStyle = TextStyle(
-    color: _labelColor,
+    color: labelColor,
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w600,
+    fontSize: 16);
+const _filterLabelTextStyleDark = TextStyle(
+    color: Colors.white,
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w600,
     fontSize: 16);
 const _dropdownOptionTextStyle =
-    TextStyle(color: _hintColor, fontSize: 16, fontStyle: FontStyle.normal);
+    TextStyle(color: hintColor, fontSize: 16, fontStyle: FontStyle.normal);
 const _hintTextStyle = TextStyle(
-  color: _hintColor,
+  color: hintColor,
+  fontSize: 16,
+  fontStyle: FontStyle.italic,
+);
+const _hintTextStyleDark = TextStyle(
+  color: Colors.white60,
   fontSize: 16,
   fontStyle: FontStyle.italic,
 );
@@ -141,24 +148,39 @@ class _FiltersPanelState extends State<FiltersPanel> {
           canvasColor: Colors.grey[50],
         ),
         child: DropdownButtonHideUnderline(
-          child: ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButton<String>(
+            child: ButtonTheme(
+          alignedDropdown: true,
+          child: DropdownButton<String>(
               icon: Icon(
                 Icons.keyboard_arrow_down,
                 size: 18,
                 color: dropdownArrowColor,
               ),
-              hint: Text(BartenderLocalizations.of(context).actionSelectOption,
-                  style: _hintTextStyle),
+              hint: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    BartenderLocalizations.of(context).actionSelectOption,
+                    style: getIt.get<ThemeHelper>().currentTheme ==
+                            BartenderTheme.DARK
+                        ? _hintTextStyleDark
+                        : _hintTextStyle,
+                  )),
               isExpanded: true,
               value: currentValue,
               items: values,
               onChanged: onChanged,
-              style: _dropdownOptionTextStyle,
-            ),
-          ),
-        ),
+              style: Theme.of(context).textTheme.bodyText1,
+              selectedItemBuilder: (context) {
+                return values.map((dropdownItem) {
+                  return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        dropdownItem.value,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ));
+                }).toList();
+              }),
+        )),
       ),
     );
   }
@@ -220,16 +242,22 @@ class _FiltersPanelState extends State<FiltersPanel> {
         ),
         child: ListView(
           children: [
-            Text(BartenderLocalizations.of(context).ingredientLabel,
-                style: _filterLabelTextStyle),
+            Text(
+              BartenderLocalizations.of(context).ingredientLabel,
+              style:
+                  getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+                      ? _filterLabelTextStyleDark
+                      : _filterLabelTextStyle,
+            ),
             _createDropdown(_ingredientFilter, _updateIngredientFilter,
                 _ingredientMenuItems),
             Padding(
               padding: EdgeInsets.only(top: 24),
-              child: Text(
-                BartenderLocalizations.of(context).categoryLabel,
-                style: _filterLabelTextStyle,
-              ),
+              child: Text(BartenderLocalizations.of(context).categoryLabel,
+                  style: getIt.get<ThemeHelper>().currentTheme ==
+                          BartenderTheme.DARK
+                      ? _filterLabelTextStyleDark
+                      : _filterLabelTextStyle),
             ),
             _createDropdown(
                 _categoryFilter, _updateCategoryFilter, _categoryMenuItems),
@@ -313,9 +341,9 @@ class _FiltersPanelState extends State<FiltersPanel> {
         padding: EdgeInsets.only(left: 56, right: 56, top: 16, bottom: 16),
         onPressed: () => {_filter()},
         color: iconColor,
-        child: PlatformText(
+        child: Text(
           BartenderLocalizations.of(context).actionResults,
-          style: whiteExtraSmallTextStyle,
+          style: Theme.of(context).textTheme.button,
         ),
       ),
     );
@@ -326,14 +354,20 @@ class _FiltersPanelState extends State<FiltersPanel> {
       children: [
         Expanded(
           flex: 1,
-          child: Text(BartenderLocalizations.of(context).ingredientLabel,
-              style: _filterLabelTextStyle),
+          child: Text(
+            BartenderLocalizations.of(context).ingredientLabel,
+            style: getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+                ? _filterLabelTextStyleDark
+                : _filterLabelTextStyle,
+          ),
         ),
         Expanded(
           flex: 1,
           child: Text(
             BartenderLocalizations.of(context).categoryLabel,
-            style: _filterLabelTextStyle,
+            style: getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+                ? _filterLabelTextStyleDark
+                : _filterLabelTextStyle,
           ),
         )
       ],

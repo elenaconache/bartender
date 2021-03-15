@@ -1,6 +1,6 @@
+import 'package:bartender/data/models/drink.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class ProfileState extends Equatable {}
 
@@ -17,11 +17,12 @@ class ProfileLoading extends ProfileState {
 class ProfileSuccess extends ProfileState {
   final User account;
   final String firebaseImageUrl;
+  final List<Drink> favoriteDrinks;
 
   @override
-  List<Object> get props => [account, firebaseImageUrl];
+  List<Object> get props => [account, firebaseImageUrl, favoriteDrinks];
 
-  ProfileSuccess(this.account, this.firebaseImageUrl);
+  ProfileSuccess(this.account, this.firebaseImageUrl, this.favoriteDrinks);
 }
 
 class ProfileError extends ProfileState {
@@ -31,11 +32,12 @@ class ProfileError extends ProfileState {
 
 class ProfileIncomplete extends ProfileState {
   final User account;
+  final List<Drink> favoriteDrinks;
 
   @override
-  List<Object> get props => [account];
+  List<Object> get props => [account, favoriteDrinks];
 
-  ProfileIncomplete(this.account);
+  ProfileIncomplete(this.account, this.favoriteDrinks);
 }
 
 class ProfileEmpty extends ProfileState {

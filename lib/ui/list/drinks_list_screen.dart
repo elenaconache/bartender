@@ -13,8 +13,6 @@ import 'package:bartender/ui/list/filters_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 
-const Color blueTextColor = Color(0xff004861);
-
 class DrinksListScreen extends StatefulWidget {
   DrinksListScreen();
 
@@ -40,8 +38,6 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
     );
   }
 
-  /// Makes the correct number of rows for the list view, based on whether the
-  /// device is portrait or landscape.
   Widget _buildDrinksWidgets(Orientation deviceOrientation) {
     if (deviceOrientation == Orientation.portrait) {
       return Container(
@@ -129,11 +125,7 @@ class _DrinksListScreenState extends State<DrinksListScreen> {
         alignment: Alignment.center,
         child: Text(
           BartenderLocalizations.of(context).filtersLabel.toUpperCase(),
-          style: TextStyle(
-              color: blueTextColor,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 20),
+          style: Theme.of(context).textTheme.headline2,
         ));
   }
 

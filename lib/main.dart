@@ -1,4 +1,7 @@
 import 'package:bartender/blocs/login/login_cubit.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/theme/colors.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:bartender/ui/drawer/drawer_screen.dart';
 import 'package:bartender/ui/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'blocs/logout/drawer_cubit.dart';
 import 'dependency_injection.dart';
@@ -15,6 +19,7 @@ void main() async {
   inject();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await getIt.get<ThemeHelper>().getCurrentTheme();
 
   runApp(BartenderApp());
 }
@@ -22,17 +27,19 @@ void main() async {
 class BartenderApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildAppWidget();
+    return ChangeNotifierProvider<ThemeHelper>(create: (context) {
+      return getIt.get<ThemeHelper>();
+    }, child: Consumer<ThemeHelper>(builder: (context, model, _) {
+      return _buildAppWidget();
+    }));
   }
 
   Widget _buildAppWidget() {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bartender',
-      theme: ThemeData(
-        primarySwatch: Colors.amber,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: getCurrentUser() == null
           ? CubitProvider<LoginCubit>(
               create: (context) => getIt.get<LoginCubit>(),
@@ -42,6 +49,9 @@ class BartenderApp extends StatelessWidget {
               create: (context) => getIt.get<LogoutCubit>(),
               child: DrawerScreen(getCurrentUser()),
             ),
+      themeMode: getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+          ? ThemeMode.dark
+          : ThemeMode.light,
       localizationsDelegates: [
         BartenderLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,

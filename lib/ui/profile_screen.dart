@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:bartender/blocs/profile/profile_cubit.dart';
 import 'package:bartender/blocs/profile/profile_states.dart';
-import 'package:bartender/constants.dart';
-import 'package:bartender/ui/backdrop.dart';
+import 'package:bartender/data/models/drink.dart';
+import 'package:bartender/data/repository/shared_preferences_repository.dart';
+import 'package:bartender/dependency_injection.dart';
+import 'package:bartender/theme/colors.dart';
+import 'package:bartender/theme/theme_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
@@ -13,13 +16,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:image_picker/image_picker.dart';
-
-final List<String> testImgList = [
-  'https://cdn.pixabay.com/photo/2020/06/17/18/03/lights-5310589__340.jpg',
-  'https://cdn.pixabay.com/photo/2020/10/07/15/20/man-5635507__340.jpg',
-  'https://cdn.pixabay.com/photo/2020/09/09/14/47/man-5557864__340.jpg',
-  'https://cdn.pixabay.com/photo/2020/09/13/04/13/coffee-5567269__340.jpg'
-]; //todo remove once real data is setup
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen();
@@ -32,6 +28,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File _image;
   String _firebaseImage;
   User _account;
+  List<Drink> _favorites;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _account = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +59,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (state is ProfileSuccess) {
         _firebaseImage = state.firebaseImageUrl;
         _account = state.account;
+        _favorites = state.favoriteDrinks;
       } else if (state is ProfileIncomplete) {
         _account = state.account;
+        _favorites = state.favoriteDrinks;
       }
       if (_image != null) {
         _uploadImageToFirebase(context);
@@ -85,13 +90,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   List<Widget> _buildCarouselItems(BuildContext context) {
-    return testImgList
+    return _favorites
         .map(
           (item) => Container(
               child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             child: CachedNetworkImage(
-                imageUrl: item,
+                imageUrl: item.imageURL,
                 fit: BoxFit.fill,
                 width: MediaQuery.of(context).size.width * 0.8),
           )),
@@ -110,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: Colors.white,
+      color: Colors.transparent,
       padding: EdgeInsets.only(bottom: 24),
       child: Align(
           alignment: Alignment.bottomCenter,
@@ -120,14 +125,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Padding(
                   padding: EdgeInsets.all(24),
-                  child: Text(
-                    'Recent activity',
-                    style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: gradientStartColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500),
-                  )),
+                  child: Text('Recent activity',
+                      style: Theme.of(context).textTheme.headline2)),
               CarouselSlider(
                 options: CarouselOptions(
                   height: 240,
@@ -165,7 +164,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildAvatarWidget() {
     return CircularProfileAvatar('',
         radius: 90,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor:
+            getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+                ? buttonColorDark
+                : buttonColor,
         borderWidth: 1,
         borderColor: Colors.white,
         elevation: 5.0,
@@ -189,18 +191,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return CircularProfileAvatar(
       '',
       radius: 90,
-      backgroundColor: Colors.blueGrey,
+      backgroundColor:
+          getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+              ? buttonColorDark
+              : buttonColor,
       borderWidth: 1,
       initialsText: Text(
-        _account != null
-            ? _account.displayName
-                .split(" ")
-                .map((e) => e.isNotEmpty ? e[0] : "")
-                .join()
-            : "",
-        style:
-            TextStyle(fontSize: 40, color: Colors.white, fontFamily: 'Poppins'),
-      ),
+          _account != null
+              ? _account.displayName
+                  .split(" ")
+                  .map((e) => e.isNotEmpty ? e[0] : "")
+                  .join()
+              : "",
+          style: Theme.of(context).textTheme.headline1),
       borderColor: Colors.white,
       elevation: 8.0,
       showInitialTextAbovePicture: true,
@@ -210,9 +213,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildAvatarWidgetLandscape() {
     return CircularProfileAvatar('',
         radius: 90,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor:
+            getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+                ? buttonColorDark
+                : buttonColor,
         borderWidth: 1,
-        borderColor: gradientStartColor,
+        borderColor:
+            getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+                ? gradientStartColorDark
+                : gradientStartColor,
         elevation: 5.0,
         cacheImage: true,
         child: _image != null
@@ -234,21 +243,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Padding(
           padding: EdgeInsets.only(top: 12),
           child: Center(
-            child: Text(
-              _account != null ? _account.displayName : "",
-              style: orientation == Orientation.portrait
-                  ? whiteSmallTextStyle
-                  : gradientColorTextStyle,
-            ),
+            child: Text(_account != null ? _account.displayName : "",
+                style: Theme.of(context).textTheme.bodyText1),
           ),
         ),
         Center(
-          child: Text(
-            _account != null ? _account.email : "",
-            style: orientation == Orientation.portrait
-                ? whiteSmallTextStyle
-                : gradientColorExtraSmallTextStyle,
-          ),
+          child: Text(_account != null ? _account.email : "",
+              style: Theme.of(context).textTheme.bodyText2),
         ),
       ],
     );
@@ -258,11 +259,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
         height: MediaQuery.of(context).size.height * 0.4,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(40),
-              bottomRight: Radius.circular(40),
-            ),
-            color: gradientStartColor),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(40),
+            bottomRight: Radius.circular(40),
+          ),
+          color: getIt.get<ThemeHelper>().currentTheme == BartenderTheme.DARK
+              ? gradientStartColorDark
+              : gradientStartColor,
+        ),
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
@@ -275,17 +279,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Icon(
                   Icons.nights_stay,
                   size: 24,
-                  color: gradientStartColor,
+                  color: gradientStartColorDark,
                 ),
                 backgroundColor: Colors.white,
-                onPressed: () => {},
+                onPressed: () {
+                  getIt.get<ThemeHelper>().toggleTheme();
+                  print('switched theme');
+                },
               ),
               _buildProfileInfoWidget(Orientation.portrait),
               FloatingActionButton(
                 child: Icon(
                   Icons.camera_alt,
                   size: 24,
-                  color: gradientStartColor,
+                  color: gradientStartColorDark,
                 ),
                 backgroundColor: Colors.white,
                 onPressed: () => {_showPicker(context)},
@@ -318,10 +325,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Icon(
                     Icons.nights_stay,
                     size: 24,
-                    color: Colors.white,
+                    color: gradientStartColorDark,
                   ),
-                  backgroundColor: gradientStartColor,
-                  onPressed: () => {},
+                  backgroundColor: Colors.white,
+                  onPressed: () {
+                    getIt.get<ThemeHelper>().toggleTheme();
+                    print('switched theme');
+                  },
                 ),
               ),
               Expanded(
@@ -335,9 +345,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Icon(
                       Icons.camera_alt,
                       size: 24,
-                      color: Colors.white,
+                      color: gradientStartColorDark,
                     ),
-                    backgroundColor: gradientStartColor,
+                    backgroundColor: Colors.white,
+                    // backgroundColor: gradientStartColor,
                     onPressed: () => {_showPicker(context)},
                   ))
             ],
@@ -347,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildProfileLandscapeWidget(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Colors.transparent,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,

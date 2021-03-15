@@ -4,12 +4,11 @@ import 'package:bartender/blocs/logout/drawer_cubit.dart';
 import 'package:bartender/constants.dart';
 import 'package:bartender/dependency_injection.dart';
 import 'package:bartender/i18n/bartender_localizations.dart';
-import 'package:bartender/ui/detail/drink_details_screen.dart';
+import 'package:bartender/theme/colors.dart';
 import 'package:bartender/ui/drawer/drawer_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:bartender/main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,7 +27,7 @@ class LoginScreenState extends State<LoginScreen> {
       return Container(
           height: double.infinity,
           width: double.infinity,
-          color: blueTextColor,
+          color: textColor,
           child: Stack(
             children: [
               Container(
@@ -57,7 +56,6 @@ class LoginScreenState extends State<LoginScreen> {
             ],
           ));
     } else {
-      //login success/ already logged in/ initial
       return Container(
           decoration: BoxDecoration(gradient: blueGradient),
           child: Center(
@@ -114,11 +112,11 @@ class LoginScreenState extends State<LoginScreen> {
       child: RaisedButton(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: blueTextColor)),
+            side: BorderSide(color: textColor)),
         padding: EdgeInsets.only(left: 56, right: 56, top: 16, bottom: 16),
         onPressed: () => {_handleSignIn()},
-        color: blueTextColor,
-        child: PlatformText(
+        color: textColor,
+        child: Text(
           BartenderLocalizations.of(context).actionGoogle,
           style: whiteExtraSmallTextStyle,
         ),
