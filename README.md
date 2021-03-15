@@ -14,10 +14,9 @@ Flutter application for browsing drinks & cocktails.
 
 ## Features
 
-custom list, image loading, BLOC/Cubit architecture, API requests, backdrop view, hero animation, collapsible toolbar, splash screen, layout for different orientations, Google sign in, i18n, dependency injection with getit, navigation drawer, logout, profile screen, image carousel
+custom list, image loading, BLOC/Cubit architecture, API requests, backdrop view, hero animation, collapsible toolbar, splash screen, layout for different orientations & network connection states, Google sign in & Firebase authentication, i18n, dependency injection with getit, navigation drawer, logout, profile screen, image carousel, camera, gallery, data persistence (sqflite database, shared preferences), chart, fade animations, dark/ light theme, flush bar messages, Firebase storage.
 
-## Flutter learning resources
+# Flutter version
 
-https://flutter.dev/docs/cookbook
+Flutter 2.0.1 • channel stable
 
-https://flutter.dev/docs
