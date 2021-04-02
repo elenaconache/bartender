@@ -11,6 +11,8 @@ Flutter application for browsing drinks & cocktails.
 
 <img src="https://i.imgur.com/duA3RZL.jpg" width="450"/>  <img src="https://i.imgur.com/nJgbJdx.jpg" width="450"/>
 
+[![Bartender](https://yt-embed.herokuapp.com/embed?v=Tnug9XtuZMI)](https://www.youtube.com/watch?v=Tnug9XtuZMI "Bartender")
+
 
 ## Features
 
